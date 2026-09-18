@@ -126,7 +126,8 @@ fun AccountCard(
     type: String,
     colorHex: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trailingContent: (@Composable () -> Unit)? = null
 ) {
     Card(
         modifier = modifier,
@@ -172,6 +173,10 @@ fun AccountCard(
                 amount = balance,
                 style = AmountTextStyle.Small
             )
+            if (trailingContent != null) {
+                Spacer(modifier = Modifier.width(Dimens.SpacingXs))
+                trailingContent()
+            }
         }
     }
 }

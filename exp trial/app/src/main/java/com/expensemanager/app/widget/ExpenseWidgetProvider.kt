@@ -5,15 +5,26 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.widget.RemoteViews
+import androidx.compose.ui.graphics.toArgb
 import com.expensemanager.app.MainActivity
 import com.expensemanager.app.R
 import com.expensemanager.app.data.db.AppDatabase
+import com.expensemanager.app.ui.theme.*
 import com.expensemanager.app.util.AppCurrency
 import com.expensemanager.app.util.formatCurrency
 import kotlinx.coroutines.*
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
+
+private data class WidgetPalette(
+    val background: Int,
+    val textPrimary: Int,
+    val textSecondary: Int,
+    val accent: Int,
+    val expense: Int
+)
 
 class ExpenseWidgetProvider : AppWidgetProvider() {
 
@@ -31,6 +42,74 @@ class ExpenseWidgetProvider : AppWidgetProvider() {
             if (ids.isEmpty()) return
             val provider = ExpenseWidgetProvider()
             for (id in ids) provider.updateWidget(context, manager, id)
+        }
+
+        private fun paletteFor(styleStr: String, dark: Boolean): WidgetPalette = when (styleStr) {
+            "WARM_PAPER" -> if (dark) WidgetPalette(
+                background = WarmPaperColors.BackgroundDark.toArgb(),
+                textPrimary = WarmPaperColors.TextPrimaryDark.toArgb(),
+                textSecondary = WarmPaperColors.TextSecondaryDark.toArgb(),
+                accent = WarmPaperColors.AccentDark.toArgb(),
+                expense = WarmPaperColors.StatusOver.toArgb()
+            ) else WidgetPalette(
+                background = WarmPaperColors.SurfaceLight.toArgb(),
+                textPrimary = WarmPaperColors.TextPrimaryLight.toArgb(),
+                textSecondary = WarmPaperColors.TextSecondaryLight.toArgb(),
+                accent = WarmPaperColors.AccentLight.toArgb(),
+                expense = WarmPaperColors.StatusOver.toArgb()
+            )
+            "EDITORIAL" -> if (dark) WidgetPalette(
+                background = EditorialColors.BackgroundDark.toArgb(),
+                textPrimary = EditorialColors.TextPrimaryDark.toArgb(),
+                textSecondary = EditorialColors.TextSecondaryDark.toArgb(),
+                accent = EditorialColors.AccentDark.toArgb(),
+                expense = EditorialColors.StatusOver.toArgb()
+            ) else WidgetPalette(
+                background = EditorialColors.BackgroundLight.toArgb(),
+                textPrimary = EditorialColors.TextPrimaryLight.toArgb(),
+                textSecondary = EditorialColors.TextSecondaryLight.toArgb(),
+                accent = EditorialColors.AccentLight.toArgb(),
+                expense = EditorialColors.StatusOver.toArgb()
+            )
+            "MEMPHIS" -> if (dark) WidgetPalette(
+                background = MemphisColors.SurfaceDark.toArgb(),
+                textPrimary = MemphisColors.TextPrimaryDark.toArgb(),
+                textSecondary = MemphisColors.TextSecondaryDark.toArgb(),
+                accent = MemphisColors.AccentDark.toArgb(),
+                expense = MemphisColors.StatusOver.toArgb()
+            ) else WidgetPalette(
+                background = MemphisColors.SurfaceLight.toArgb(),
+                textPrimary = MemphisColors.TextPrimaryLight.toArgb(),
+                textSecondary = MemphisColors.TextSecondaryLight.toArgb(),
+                accent = MemphisColors.AccentLight.toArgb(),
+                expense = MemphisColors.StatusOver.toArgb()
+            )
+            "TERMINAL" -> if (dark) WidgetPalette(
+                background = TerminalColors.SurfaceDark.toArgb(),
+                textPrimary = TerminalColors.TextPrimaryDark.toArgb(),
+                textSecondary = TerminalColors.TextSecondaryDark.toArgb(),
+                accent = TerminalColors.AccentDark.toArgb(),
+                expense = TerminalColors.ErrorDark.toArgb()
+            ) else WidgetPalette(
+                background = TerminalColors.SurfaceLight.toArgb(),
+                textPrimary = TerminalColors.TextPrimaryLight.toArgb(),
+                textSecondary = TerminalColors.TextSecondaryLight.toArgb(),
+                accent = TerminalColors.AccentLight.toArgb(),
+                expense = TerminalColors.ErrorLight.toArgb()
+            )
+            else -> if (dark) WidgetPalette(
+                background = SurfaceDark.toArgb(),
+                textPrimary = TextPrimaryDark.toArgb(),
+                textSecondary = TextSecondaryDark.toArgb(),
+                accent = PrimaryDark.toArgb(),
+                expense = ExpenseRed.toArgb()
+            ) else WidgetPalette(
+                background = SurfaceLight.toArgb(),
+                textPrimary = TextPrimaryLight.toArgb(),
+                textSecondary = TextSecondaryLight.toArgb(),
+                accent = PrimaryLight.toArgb(),
+                expense = ExpenseRed.toArgb()
+            )
         }
     }
 
@@ -80,8 +159,32 @@ class ExpenseWidgetProvider : AppWidgetProvider() {
                 // currency straight from the database rather than assuming the default.
                 val currencyCode = database.settingsDao().getValue("base_currency") ?: "INR"
 
+                val themeModeStr = database.settingsDao().getValue("theme") ?: "SYSTEM"
+                val themeStyleStr = database.settingsDao().getValue("theme_style") ?: "CLASSIC"
+                val systemNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                val systemDark = systemNightMode == Configuration.UI_MODE_NIGHT_YES
+                val dark = when (themeModeStr) {
+                    "LIGHT" -> false
+                    "DARK" -> true
+                    // Terminal defaults to dark even under "System", matching the in-app theme
+                    else -> themeStyleStr == "TERMINAL" || systemDark
+                }
+                val palette = paletteFor(themeStyleStr, dark)
+
                 withContext(Dispatchers.Main) {
                     AppCurrency.set(currencyCode)
+
+                    views.setInt(R.id.widget_root, "setBackgroundColor", palette.background)
+                    views.setTextColor(R.id.widget_app_name, palette.accent)
+                    views.setTextColor(R.id.widget_date, palette.textSecondary)
+                    views.setTextColor(R.id.widget_label_balance, palette.textSecondary)
+                    views.setTextColor(R.id.widget_label_today, palette.textSecondary)
+                    views.setTextColor(R.id.widget_label_month, palette.textSecondary)
+                    views.setTextColor(R.id.widget_balance_amount, palette.textPrimary)
+                    views.setTextColor(R.id.widget_month_amount, palette.textPrimary)
+                    views.setTextColor(R.id.widget_today_amount, palette.expense)
+                    views.setInt(R.id.widget_add_button, "setBackgroundColor", palette.accent)
+
                     views.setTextViewText(R.id.widget_balance_amount, totalBalance.formatCurrency())
                     views.setTextViewText(R.id.widget_today_amount, todayExpense.formatCurrency())
                     views.setTextViewText(R.id.widget_month_amount, monthExpense.formatCurrency())

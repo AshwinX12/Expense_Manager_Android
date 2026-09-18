@@ -209,8 +209,27 @@ fun ReportsScreen(
                     )
                     Spacer(Modifier.height(Dimens.SpacingSm))
                     topCategories.forEachIndexed { i, (name, amount) ->
-                        Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                            Text("${i + 1}. $name", style = MaterialTheme.typography.bodySmall)
+                        val categoryColor = state.categoryColors.getOrNull(i)?.toComposeColor()
+                            ?: MaterialTheme.colorScheme.onSurface
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            Arrangement.SpaceBetween,
+                            Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    Modifier
+                                        .size(10.dp)
+                                        .background(categoryColor, MaterialTheme.shapes.extraSmall)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    "${i + 1}. $name",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = categoryColor,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
                             Text(amount.formatCurrency(), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
                         }
                     }

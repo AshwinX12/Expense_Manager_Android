@@ -24,6 +24,7 @@ import com.expensemanager.app.data.repository.CategoryRepository
 import com.expensemanager.app.ui.components.CreateCategorySheet
 import com.expensemanager.app.ui.components.flatTopAppBarColors
 import com.expensemanager.app.ui.theme.*
+import com.expensemanager.app.util.capitalizeFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -38,7 +39,9 @@ class CategoryViewModel @Inject constructor(
 
     fun addCategory(name: String, color: String) {
         viewModelScope.launch {
-            categoryRepository.insertCategory(CategoryEntity(name = name, colorHex = color))
+            categoryRepository.insertCategory(
+                CategoryEntity(name = name.capitalizeFirst(), colorHex = color)
+            )
         }
     }
 

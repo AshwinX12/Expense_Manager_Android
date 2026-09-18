@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.expensemanager.app.data.db.entity.*
 import com.expensemanager.app.data.repository.*
+import com.expensemanager.app.util.capitalizeFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -205,7 +206,7 @@ class AddTransactionViewModel @Inject constructor(
     fun createCategory(name: String, colorHex: String) {
         viewModelScope.launch {
             val id = categoryRepository.insertCategory(
-                CategoryEntity(name = name.trim(), colorHex = colorHex)
+                CategoryEntity(name = name.trim().capitalizeFirst(), colorHex = colorHex)
             )
             // Auto-select the newly created category
             _uiState.update { it.copy(categoryId = id, subcategoryId = null) }

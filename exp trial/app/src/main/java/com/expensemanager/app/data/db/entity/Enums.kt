@@ -16,7 +16,9 @@ enum class AccountType {
     BANK,
     CASH,
     CREDIT_CARD,
-    DIGITAL_WALLET
+    DIGITAL_WALLET,
+    UPI,
+    OTHER
 }
 
 enum class PaymentMethod {

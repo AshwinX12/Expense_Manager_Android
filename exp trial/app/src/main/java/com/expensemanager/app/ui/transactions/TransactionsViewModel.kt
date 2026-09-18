@@ -78,6 +78,20 @@ class TransactionsViewModel @Inject constructor(
         }
     }
 
+    /** Highest-spend calendar days across all transactions, highest first. */
+    fun getTopSpendingDays(limit: Int = 3): List<Pair<java.time.LocalDate, BigDecimal>> {
+        return _uiState.value.transactions
+            .filter {
+                it.transaction.type == TransactionType.EXPENSE ||
+                    it.transaction.type == TransactionType.TRANSFER_TO_GOAL ||
+                    it.transaction.type == TransactionType.DEBT_TRANSFER_OUT
+            }
+            .groupBy { it.transaction.date }
+            .map { (date, txs) -> date to txs.sumOf { it.transaction.amount } }
+            .sortedByDescending { it.second }
+            .take(limit)
+    }
+
     fun setSearchQuery(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
     }

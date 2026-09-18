@@ -44,6 +44,16 @@ class ReportsViewModel @Inject constructor(
     init {
         loadCategories()
         loadReports()
+        // Reports previously only reloaded on init or when the date range changed, so an
+        // edited/added transaction or a changed budget elsewhere in the app (Reports stays
+        // alive in the swipe pager, so it wasn't even recreated on tab switch) wouldn't show
+        // up until something happened to force a reload — read as a "delayed update" bug.
+        viewModelScope.launch {
+            combine(
+                transactionRepository.getAllFlow(),
+                budgetRepository.getAllFlow()
+            ) { _, _ -> Unit }.drop(1).collect { loadReports() }
+        }
     }
 
     private fun loadCategories() {

@@ -47,6 +47,10 @@ fun BigDecimal.formatCompact(currencySymbol: String = AppCurrency.symbol): Strin
     }
 }
 
+/** Capitalizes just the first letter, leaving the rest as typed (so "iPhone bill" stays "iPhone bill"). */
+fun String.capitalizeFirst(): String =
+    trim().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+
 fun LocalDate.formatDisplay(): String = format(Constants.DEFAULT_DATE_FORMATTER)
 fun LocalDate.formatShort(): String = format(Constants.SHORT_DATE_FORMATTER)
 fun LocalDate.formatMonthYear(): String = format(Constants.MONTH_YEAR_FORMATTER)

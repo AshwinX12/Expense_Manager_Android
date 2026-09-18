@@ -31,6 +31,7 @@ data class HomeUiState(
     val recentTransactions: List<TransactionWithDetails> = emptyList(),
     val quickAddShortcuts: List<QuickAddShortcutEntity> = emptyList(),
     val accounts: List<AccountWithBalance> = emptyList(),
+    val selectedAccountId: Long? = null,
     val isLoading: Boolean = true
 )
 
@@ -40,6 +41,7 @@ class HomeViewModel @Inject constructor(
     private val accountRepository: AccountRepository,
     private val budgetRepository: BudgetRepository,
     private val categoryRepository: CategoryRepository,
+    private val settingsRepository: SettingsRepository,
     private val quickAddShortcutDao: com.expensemanager.app.data.db.dao.QuickAddShortcutDao,
     private val recurringTransactionRepository: com.expensemanager.app.data.repository.RecurringTransactionRepository
 ) : ViewModel() {
@@ -106,18 +108,41 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-        // Accounts with balance
+        // Accounts with balance — total is either every account combined, or a single
+        // account the user picked on the Home screen
         val daysLeftInMonth = (monthEnd.dayOfMonth - today.dayOfMonth + 1).coerceAtLeast(1)
         viewModelScope.launch {
-            accountRepository.getAllWithBalanceFlow().collect { accounts ->
-                val totalBalance = accounts.sumOf { it.balance }
-                val perDaySpendable = totalBalance.divide(
-                    BigDecimal(daysLeftInMonth), 2, java.math.RoundingMode.DOWN
-                )
-                _uiState.update {
-                    it.copy(accounts = accounts, totalBalance = totalBalance, perDaySpendable = perDaySpendable)
+            combine(
+                accountRepository.getAllWithBalanceFlow(),
+                settingsRepository.getHomeAccountIdFlow()
+            ) { accounts, selectedId -> accounts to selectedId }
+                .collect { (accounts, selectedId) ->
+                    val selectedAccount = selectedId?.let { id -> accounts.firstOrNull { it.id == id } }
+                    val totalBalance = selectedAccount?.balance ?: accounts.sumOf { it.balance }
+
+                    // Locked to once per calendar day: recomputing this every time the
+                    // balance changes (i.e. every transaction) makes it read as a moving
+                    // target instead of "here's what you can spend today."
+                    val cached = settingsRepository.getPerDaySpendCache()
+                    val perDaySpendable = if (cached != null && cached.first == today) {
+                        cached.second
+                    } else {
+                        val computed = totalBalance.divide(
+                            BigDecimal(daysLeftInMonth), 2, java.math.RoundingMode.DOWN
+                        )
+                        settingsRepository.setPerDaySpendCache(today, computed)
+                        computed
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            accounts = accounts,
+                            totalBalance = totalBalance,
+                            perDaySpendable = perDaySpendable,
+                            selectedAccountId = selectedId
+                        )
+                    }
                 }
-            }
         }
 
         // Quick-add shortcuts
@@ -136,6 +161,10 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setHomeAccount(accountId: Long?) {
+        viewModelScope.launch { settingsRepository.setHomeAccountId(accountId) }
     }
 
     fun executeQuickAdd(shortcut: QuickAddShortcutEntity) {

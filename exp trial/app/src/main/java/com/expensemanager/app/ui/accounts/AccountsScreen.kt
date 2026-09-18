@@ -26,6 +26,11 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import javax.inject.Inject
 
+fun accountTypeLabel(type: AccountType, customTypeName: String?): String = when (type) {
+    AccountType.OTHER -> customTypeName?.takeIf { it.isNotBlank() } ?: "Other"
+    else -> type.name.lowercase().replace('_', ' ').replaceFirstChar { it.uppercase() }
+}
+
 @HiltViewModel
 class AccountViewModel @Inject constructor(
     private val accountRepository: AccountRepository
@@ -33,9 +38,40 @@ class AccountViewModel @Inject constructor(
     val accounts = accountRepository.getAllWithBalanceFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    fun addAccount(name: String, type: AccountType, balance: BigDecimal) {
+    fun addAccount(name: String, type: AccountType, customTypeName: String?, balance: BigDecimal) {
         viewModelScope.launch {
-            accountRepository.insert(AccountEntity(name = name, type = type, initialBalance = balance))
+            accountRepository.insert(
+                AccountEntity(
+                    name = name,
+                    type = type,
+                    customTypeName = customTypeName,
+                    initialBalance = balance
+                )
+            )
+        }
+    }
+
+    fun updateAccount(
+        account: AccountWithBalance,
+        name: String,
+        type: AccountType,
+        customTypeName: String?,
+        newCurrentBalance: BigDecimal
+    ) {
+        viewModelScope.launch {
+            val existing = accountRepository.getById(account.id) ?: return@launch
+            // The user edits the *current* balance, but what's actually stored is the
+            // opening balance — back-solve it so (opening + all transactions) = what they typed.
+            val transactionsNet = account.balance - account.initialBalance
+            val newInitialBalance = newCurrentBalance - transactionsNet
+            accountRepository.update(
+                existing.copy(
+                    name = name,
+                    type = type,
+                    customTypeName = customTypeName,
+                    initialBalance = newInitialBalance
+                )
+            )
         }
     }
 
@@ -54,6 +90,8 @@ fun AccountsScreen(
 ) {
     val accounts by viewModel.accounts.collectAsStateWithLifecycle()
     var showAddDialog by remember { mutableStateOf(false) }
+    var accountToEdit by remember { mutableStateOf<AccountWithBalance?>(null) }
+    var accountToDelete by remember { mutableStateOf<AccountWithBalance?>(null) }
 
     Scaffold(
         topBar = {
@@ -72,42 +110,164 @@ fun AccountsScreen(
             verticalArrangement = Arrangement.spacedBy(Dimens.SpacingSm)
         ) {
             items(accounts, key = { it.id }) { account ->
+                var showMenu by remember { mutableStateOf(false) }
                 AccountCard(
                     name = account.name,
                     balance = account.balance,
-                    type = account.type.name.lowercase().replace('_', ' ').replaceFirstChar { it.uppercase() },
+                    type = accountTypeLabel(account.type, account.customTypeName),
                     colorHex = account.colorHex,
-                    onClick = {}
+                    onClick = { showMenu = true },
+                    trailingContent = {
+                        Box {
+                            IconButton(onClick = { showMenu = true }) {
+                                Icon(Icons.Default.MoreVert, contentDescription = "Account options")
+                            }
+                            DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                                DropdownMenuItem(
+                                    text = { Text("Edit / change balance") },
+                                    leadingIcon = { Icon(Icons.Default.Edit, null) },
+                                    onClick = { showMenu = false; accountToEdit = account }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Remove account") },
+                                    leadingIcon = { Icon(Icons.Default.Delete, null) },
+                                    onClick = { showMenu = false; accountToDelete = account }
+                                )
+                            }
+                        }
+                    }
                 )
             }
         }
     }
 
     if (showAddDialog) {
-        var name by remember { mutableStateOf("") }
-        var type by remember { mutableStateOf(AccountType.BANK) }
-        var balance by remember { mutableStateOf("0") }
+        AccountEditDialog(
+            title = "Add Account",
+            initialName = "",
+            initialType = AccountType.BANK,
+            initialCustomTypeName = "",
+            initialBalance = BigDecimal.ZERO,
+            onDismiss = { showAddDialog = false },
+            onSave = { name, type, customTypeName, balance ->
+                viewModel.addAccount(name, type, customTypeName, balance)
+                showAddDialog = false
+            }
+        )
+    }
+
+    accountToEdit?.let { account ->
+        AccountEditDialog(
+            title = "Edit Account",
+            initialName = account.name,
+            initialType = account.type,
+            initialCustomTypeName = account.customTypeName ?: "",
+            initialBalance = account.balance,
+            onDismiss = { accountToEdit = null },
+            onSave = { name, type, customTypeName, balance ->
+                viewModel.updateAccount(account, name, type, customTypeName, balance)
+                accountToEdit = null
+            }
+        )
+    }
+
+    accountToDelete?.let { account ->
         AlertDialog(
-            onDismissRequest = { showAddDialog = false },
-            title = { Text("Add Account") },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpacingSm)) {
-                    OutlinedTextField(name, { name = it }, label = { Text("Account Name") }, modifier = Modifier.fillMaxWidth())
-                    Row(horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingXs)) {
-                        AccountType.entries.forEach { t ->
-                            FilterChip(selected = type == t, onClick = { type = t },
-                                label = { Text(t.name.take(4), style = MaterialTheme.typography.labelSmall) })
-                        }
-                    }
-                    OutlinedTextField(balance, { balance = it }, label = { Text("Initial Balance") }, modifier = Modifier.fillMaxWidth())
+            onDismissRequest = { accountToDelete = null },
+            title = { Text("Remove ${account.name}?") },
+            text = { Text("This deletes the account. Its transactions stay in your history but will show no account.") },
+            confirmButton = {
+                Button(onClick = { viewModel.deleteAccount(account.id); accountToDelete = null }) {
+                    Text("Remove")
                 }
             },
-            confirmButton = {
-                Button(onClick = {
-                    balance.toBigDecimalOrNull()?.let { viewModel.addAccount(name, type, it); showAddDialog = false }
-                }) { Text("Save") }
-            },
-            dismissButton = { TextButton(onClick = { showAddDialog = false }) { Text("Cancel") } }
+            dismissButton = {
+                TextButton(onClick = { accountToDelete = null }) { Text("Cancel") }
+            }
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AccountEditDialog(
+    title: String,
+    initialName: String,
+    initialType: AccountType,
+    initialCustomTypeName: String,
+    initialBalance: BigDecimal,
+    onDismiss: () -> Unit,
+    onSave: (name: String, type: AccountType, customTypeName: String?, balance: BigDecimal) -> Unit
+) {
+    var name by remember { mutableStateOf(initialName) }
+    var type by remember { mutableStateOf(initialType) }
+    var customTypeName by remember { mutableStateOf(initialCustomTypeName) }
+    var balanceText by remember { mutableStateOf(initialBalance.toPlainString()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpacingSm)) {
+                OutlinedTextField(name, { name = it }, label = { Text("Account Name") }, modifier = Modifier.fillMaxWidth())
+
+                Text("Type", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                FlowRowChips(
+                    options = AccountType.entries,
+                    selected = type,
+                    onSelect = { type = it }
+                )
+
+                if (type == AccountType.OTHER) {
+                    OutlinedTextField(
+                        customTypeName,
+                        { customTypeName = it },
+                        label = { Text("Type name (e.g. \"Gift Card\")") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                OutlinedTextField(
+                    balanceText,
+                    { balanceText = it },
+                    label = { Text(if (initialName.isEmpty()) "Initial Balance" else "Current Balance") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                balanceText.toBigDecimalOrNull()?.let {
+                    onSave(name, type, customTypeName.trim().ifBlank { null }, it)
+                }
+            }) { Text("Save") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+    )
+}
+
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun FlowRowChips(
+    options: List<AccountType>,
+    selected: AccountType,
+    onSelect: (AccountType) -> Unit
+) {
+    androidx.compose.foundation.layout.FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingXs),
+        verticalArrangement = Arrangement.spacedBy(Dimens.SpacingXs)
+    ) {
+        options.forEach { t ->
+            FilterChip(
+                selected = selected == t,
+                onClick = { onSelect(t) },
+                label = {
+                    Text(
+                        if (t == AccountType.OTHER) "+ New" else accountTypeLabel(t, null),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+            )
+        }
     }
 }

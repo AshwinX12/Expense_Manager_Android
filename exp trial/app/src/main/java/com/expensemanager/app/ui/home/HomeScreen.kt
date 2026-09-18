@@ -117,11 +117,48 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier.padding(Dimens.SpacingXl)
                 ) {
-                    Text(
-                        text = "Total Balance",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = balanceContent.copy(alpha = 0.8f)
-                    )
+                    var showAccountPicker by remember { mutableStateOf(false) }
+                    val selectedAccountName = state.accounts.firstOrNull { it.id == state.selectedAccountId }?.name
+
+                    Box {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable { showAccountPicker = true }
+                        ) {
+                            Text(
+                                text = selectedAccountName?.let { "$it Balance" } ?: "Total Balance",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = balanceContent.copy(alpha = 0.8f)
+                            )
+                            Icon(
+                                Icons.Default.ArrowDropDown,
+                                contentDescription = "Choose account",
+                                tint = balanceContent.copy(alpha = 0.8f),
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = showAccountPicker,
+                            onDismissRequest = { showAccountPicker = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("All Accounts") },
+                                onClick = { viewModel.setHomeAccount(null); showAccountPicker = false },
+                                leadingIcon = {
+                                    if (state.selectedAccountId == null) Icon(Icons.Default.Check, null)
+                                }
+                            )
+                            state.accounts.forEach { account ->
+                                DropdownMenuItem(
+                                    text = { Text(account.name) },
+                                    onClick = { viewModel.setHomeAccount(account.id); showAccountPicker = false },
+                                    leadingIcon = {
+                                        if (state.selectedAccountId == account.id) Icon(Icons.Default.Check, null)
+                                    }
+                                )
+                            }
+                        }
+                    }
                     Spacer(modifier = Modifier.height(Dimens.SpacingXs))
                     Text(
                         text = state.totalBalance.formatCurrency(),

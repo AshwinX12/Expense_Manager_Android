@@ -41,7 +41,7 @@ interface AccountDao {
     fun getBalanceFlow(accountId: Long): Flow<BigDecimal>
 
     @Query("""
-        SELECT a.id, a.name, a.type, a.currency, a.initialBalance, a.iconName, a.colorHex, a.isDefault, a.sortOrder,
+        SELECT a.id, a.name, a.type, a.currency, a.initialBalance, a.iconName, a.colorHex, a.isDefault, a.sortOrder, a.customTypeName,
             a.initialBalance + 
             COALESCE((SELECT SUM(CASE WHEN t.type = 'INCOME' THEN t.amount ELSE 0 END) FROM transactions t WHERE t.accountId = a.id), 0) -
             COALESCE((SELECT SUM(CASE WHEN t.type = 'EXPENSE' THEN t.amount ELSE 0 END) FROM transactions t WHERE t.accountId = a.id), 0) -
@@ -77,5 +77,6 @@ data class AccountWithBalance(
     val colorHex: String,
     val isDefault: Boolean,
     val sortOrder: Int,
+    val customTypeName: String? = null,
     val balance: BigDecimal
 )

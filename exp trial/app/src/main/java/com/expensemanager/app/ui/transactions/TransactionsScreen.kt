@@ -22,6 +22,7 @@ import com.expensemanager.app.ui.planning.ScheduledViewModel
 import com.expensemanager.app.ui.navigation.LocalNavReselectEvent
 import com.expensemanager.app.ui.navigation.Screen
 import com.expensemanager.app.util.formatCurrency
+import com.expensemanager.app.util.formatDisplay
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -66,6 +67,16 @@ fun TransactionsScreen(
                 fontWeight = FontWeight.Bold
             )
             Row {
+                var showTopSpendingDays by remember { mutableStateOf(false) }
+                IconButton(onClick = { showTopSpendingDays = true }) {
+                    Icon(Icons.Default.Whatshot, "Top spending days")
+                }
+                if (showTopSpendingDays) {
+                    TopSpendingDaysDialog(
+                        days = viewModel.getTopSpendingDays(),
+                        onDismiss = { showTopSpendingDays = false }
+                    )
+                }
                 IconButton(onClick = { showFilterSheet = true }) {
                     Badge(
                         modifier = Modifier.size(if (state.filter.isActive) 8.dp else 0.dp),
@@ -457,4 +468,50 @@ fun FilterBottomSheet(
             DatePicker(state = datePickerState)
         }
     }
+}
+
+@Composable
+private fun TopSpendingDaysDialog(
+    days: List<Pair<LocalDate, BigDecimal>>,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Top Spending Days") },
+        text = {
+            if (days.isEmpty()) {
+                Text("No expenses recorded yet.", style = MaterialTheme.typography.bodyMedium)
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpacingMd)) {
+                    days.forEachIndexed { index, (date, amount) ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    "#${index + 1}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(Modifier.width(Dimens.SpacingSm))
+                                Text(date.formatDisplay(), style = MaterialTheme.typography.bodyMedium)
+                            }
+                            Text(
+                                amount.formatCurrency(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = ExpenseRed
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Close") }
+        }
+    )
 }
