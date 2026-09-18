@@ -1,0 +1,151 @@
+Date,Type,Amount,Category,Account,Note,Merchant
+2026-07-12,EXPENSE,50.44,Shopping,Cash,Test expense for Shopping,Merchant 19
+2026-02-15,INCOME,728.76,Freelance,Credit Card,Test income for Freelance,Merchant 20
+2026-05-24,EXPENSE,121.24,Travel,Credit Card,Test expense for Travel,Merchant 4
+2026-02-28,EXPENSE,13.61,Food,Cash,Test expense for Food,Merchant 18
+2026-06-27,EXPENSE,26.17,Shopping,Bank Account,Test expense for Shopping,Merchant 12
+2026-05-13,INCOME,1264.57,Salary,Credit Card,Test income for Salary,Merchant 6
+2026-07-01,INCOME,1609.55,Gift,Credit Card,Test income for Gift,Merchant 18
+2026-04-16,EXPENSE,31.19,Entertainment,Cash,Test expense for Entertainment,Merchant 12
+2026-07-06,EXPENSE,126.68,Transport,Bank Account,Test expense for Transport,Merchant 1
+2026-05-07,EXPENSE,171.43,Transport,Bank Account,Test expense for Transport,Merchant 3
+2026-02-05,EXPENSE,115.09,Entertainment,Bank Account,Test expense for Entertainment,Merchant 20
+2026-04-23,EXPENSE,148.43,Transport,Cash,Test expense for Transport,Merchant 4
+2026-02-26,EXPENSE,17.25,Shopping,Credit Card,Test expense for Shopping,Merchant 7
+2026-04-26,EXPENSE,98.01,Transport,Credit Card,Test expense for Transport,Merchant 7
+2026-03-25,EXPENSE,50.37,Shopping,Cash,Test expense for Shopping,Merchant 11
+2026-03-10,EXPENSE,35.58,Shopping,Cash,Test expense for Shopping,Merchant 18
+2026-02-19,EXPENSE,126.45,Entertainment,Credit Card,Test expense for Entertainment,Merchant 7
+2026-04-19,EXPENSE,94.44,Food,Bank Account,Test expense for Food,Merchant 15
+2026-07-03,INCOME,589.57,Freelance,Cash,Test income for Freelance,Merchant 17
+2026-05-07,INCOME,1544.75,Salary,Bank Account,Test income for Salary,Merchant 14
+2026-07-23,EXPENSE,180.06,Transport,Credit Card,Test expense for Transport,Merchant 12
+2026-04-04,EXPENSE,192.02,Transport,Credit Card,Test expense for Transport,Merchant 7
+2026-04-08,INCOME,1275.44,Gift,Bank Account,Test income for Gift,Merchant 11
+2026-04-10,EXPENSE,64.18,Transport,Credit Card,Test expense for Transport,Merchant 5
+2026-05-28,EXPENSE,84.06,Utilities,Credit Card,Test expense for Utilities,Merchant 1
+2026-04-29,INCOME,1593.39,Freelance,Cash,Test income for Freelance,Merchant 6
+2026-06-08,EXPENSE,75.3,Travel,Bank Account,Test expense for Travel,Merchant 19
+2026-02-15,EXPENSE,6.54,Food,Bank Account,Test expense for Food,Merchant 20
+2026-04-26,INCOME,1348.46,Gift,Cash,Test income for Gift,Merchant 19
+2026-05-12,EXPENSE,32.26,Entertainment,Credit Card,Test expense for Entertainment,Merchant 11
+2026-05-08,EXPENSE,158.35,Shopping,Credit Card,Test expense for Shopping,Merchant 1
+2026-04-10,EXPENSE,194.01,Food,Bank Account,Test expense for Food,Merchant 9
+2026-02-11,EXPENSE,6.12,Travel,Cash,Test expense for Travel,Merchant 15
+2026-05-15,EXPENSE,196.3,Transport,Cash,Test expense for Transport,Merchant 4
+2026-06-07,EXPENSE,151.16,Food,Bank Account,Test expense for Food,Merchant 19
+2026-06-23,EXPENSE,19.19,Health,Credit Card,Test expense for Health,Merchant 2
+2026-05-04,EXPENSE,18.03,Travel,Bank Account,Test expense for Travel,Merchant 8
+2026-02-12,INCOME,1590.64,Investment,Credit Card,Test income for Investment,Merchant 15
+2026-01-31,EXPENSE,188.34,Shopping,Cash,Test expense for Shopping,Merchant 1
+2026-02-11,EXPENSE,73.24,Utilities,Cash,Test expense for Utilities,Merchant 13
+2026-05-14,EXPENSE,14.55,Utilities,Credit Card,Test expense for Utilities,Merchant 18
+2026-05-30,INCOME,243.04,Gift,Bank Account,Test income for Gift,Merchant 14
+2026-05-19,INCOME,426.5,Freelance,Credit Card,Test income for Freelance,Merchant 7
+2026-03-24,EXPENSE,131.4,Food,Cash,Test expense for Food,Merchant 1
+2026-04-19,INCOME,283.67,Investment,Cash,Test income for Investment,Merchant 11
+2026-04-16,EXPENSE,99.5,Health,Bank Account,Test expense for Health,Merchant 10
+2026-03-02,EXPENSE,76.56,Utilities,Bank Account,Test expense for Utilities,Merchant 13
+2026-05-29,EXPENSE,102.48,Shopping,Cash,Test expense for Shopping,Merchant 8
+2026-06-08,INCOME,1602.07,Freelance,Bank Account,Test income for Freelance,Merchant 1
+2026-02-02,EXPENSE,41.25,Health,Cash,Test expense for Health,Merchant 20
+2026-03-18,EXPENSE,123.21,Health,Cash,Test expense for Health,Merchant 18
+2026-05-23,EXPENSE,22.0,Entertainment,Credit Card,Test expense for Entertainment,Merchant 8
+2026-06-12,INCOME,271.06,Gift,Cash,Test income for Gift,Merchant 7
+2026-06-23,EXPENSE,135.21,Transport,Bank Account,Test expense for Transport,Merchant 8
+2026-04-03,EXPENSE,183.89,Travel,Cash,Test expense for Travel,Merchant 8
+2026-06-20,EXPENSE,15.99,Food,Credit Card,Test expense for Food,Merchant 18
+2026-06-09,EXPENSE,29.1,Health,Bank Account,Test expense for Health,Merchant 9
+2026-05-29,EXPENSE,91.68,Entertainment,Bank Account,Test expense for Entertainment,Merchant 17
+2026-05-12,EXPENSE,114.89,Food,Credit Card,Test expense for Food,Merchant 15
+2026-03-16,EXPENSE,61.19,Health,Bank Account,Test expense for Health,Merchant 19
+2026-06-25,EXPENSE,95.53,Food,Bank Account,Test expense for Food,Merchant 4
+2026-06-15,EXPENSE,29.18,Utilities,Cash,Test expense for Utilities,Merchant 19
+2026-07-21,EXPENSE,13.47,Utilities,Bank Account,Test expense for Utilities,Merchant 12
+2026-06-22,EXPENSE,141.28,Utilities,Cash,Test expense for Utilities,Merchant 8
+2026-02-11,EXPENSE,68.62,Shopping,Credit Card,Test expense for Shopping,Merchant 18
+2026-04-04,EXPENSE,63.15,Entertainment,Credit Card,Test expense for Entertainment,Merchant 13
+2026-04-18,EXPENSE,22.05,Shopping,Credit Card,Test expense for Shopping,Merchant 10
+2026-05-21,EXPENSE,114.37,Entertainment,Credit Card,Test expense for Entertainment,Merchant 5
+2026-03-06,EXPENSE,141.27,Shopping,Bank Account,Test expense for Shopping,Merchant 20
+2026-04-23,EXPENSE,140.1,Shopping,Bank Account,Test expense for Shopping,Merchant 9
+2026-04-08,EXPENSE,130.65,Transport,Cash,Test expense for Transport,Merchant 13
+2026-06-02,EXPENSE,139.76,Shopping,Cash,Test expense for Shopping,Merchant 17
+2026-04-14,EXPENSE,59.26,Travel,Cash,Test expense for Travel,Merchant 7
+2026-06-15,EXPENSE,196.67,Entertainment,Cash,Test expense for Entertainment,Merchant 3
+2026-02-06,EXPENSE,168.6,Transport,Credit Card,Test expense for Transport,Merchant 9
+2026-06-05,EXPENSE,39.46,Food,Cash,Test expense for Food,Merchant 8
+2026-05-24,EXPENSE,179.85,Shopping,Credit Card,Test expense for Shopping,Merchant 18
+2026-06-22,EXPENSE,137.49,Transport,Bank Account,Test expense for Transport,Merchant 18
+2026-04-25,EXPENSE,117.09,Transport,Cash,Test expense for Transport,Merchant 7
+2026-04-18,EXPENSE,141.32,Travel,Cash,Test expense for Travel,Merchant 13
+2026-02-03,EXPENSE,130.37,Food,Bank Account,Test expense for Food,Merchant 14
+2026-04-11,EXPENSE,9.56,Shopping,Cash,Test expense for Shopping,Merchant 6
+2026-05-07,EXPENSE,72.0,Entertainment,Cash,Test expense for Entertainment,Merchant 14
+2026-03-22,INCOME,527.94,Gift,Cash,Test income for Gift,Merchant 15
+2026-07-19,EXPENSE,13.89,Transport,Credit Card,Test expense for Transport,Merchant 15
+2026-07-08,EXPENSE,174.01,Travel,Credit Card,Test expense for Travel,Merchant 1
+2026-01-30,INCOME,1566.93,Salary,Bank Account,Test income for Salary,Merchant 17
+2026-05-14,EXPENSE,193.1,Travel,Bank Account,Test expense for Travel,Merchant 2
+2026-03-13,EXPENSE,109.8,Entertainment,Bank Account,Test expense for Entertainment,Merchant 13
+2026-04-17,EXPENSE,165.31,Transport,Credit Card,Test expense for Transport,Merchant 16
+2026-02-17,EXPENSE,165.77,Shopping,Cash,Test expense for Shopping,Merchant 12
+2026-02-20,EXPENSE,122.93,Transport,Credit Card,Test expense for Transport,Merchant 16
+2026-04-10,INCOME,495.34,Salary,Credit Card,Test income for Salary,Merchant 6
+2026-07-26,EXPENSE,138.21,Food,Bank Account,Test expense for Food,Merchant 18
+2026-06-30,EXPENSE,124.29,Shopping,Cash,Test expense for Shopping,Merchant 12
+2026-07-02,EXPENSE,190.36,Transport,Cash,Test expense for Transport,Merchant 6
+2026-03-10,EXPENSE,165.58,Transport,Cash,Test expense for Transport,Merchant 14
+2026-02-10,EXPENSE,11.27,Food,Credit Card,Test expense for Food,Merchant 11
+2026-03-10,EXPENSE,165.27,Transport,Credit Card,Test expense for Transport,Merchant 11
+2026-04-21,INCOME,356.11,Freelance,Credit Card,Test income for Freelance,Merchant 11
+2026-05-21,EXPENSE,173.96,Health,Credit Card,Test expense for Health,Merchant 9
+2026-07-21,EXPENSE,193.29,Utilities,Cash,Test expense for Utilities,Merchant 13
+2026-04-03,EXPENSE,124.38,Food,Bank Account,Test expense for Food,Merchant 7
+2026-03-06,EXPENSE,71.98,Health,Cash,Test expense for Health,Merchant 13
+2026-04-19,EXPENSE,84.31,Transport,Credit Card,Test expense for Transport,Merchant 6
+2026-04-07,EXPENSE,10.58,Shopping,Credit Card,Test expense for Shopping,Merchant 12
+2026-07-09,EXPENSE,188.88,Shopping,Credit Card,Test expense for Shopping,Merchant 3
+2026-04-13,EXPENSE,76.57,Travel,Cash,Test expense for Travel,Merchant 17
+2026-05-05,EXPENSE,137.22,Food,Credit Card,Test expense for Food,Merchant 14
+2026-05-26,EXPENSE,197.45,Transport,Credit Card,Test expense for Transport,Merchant 18
+2026-05-30,EXPENSE,76.78,Utilities,Bank Account,Test expense for Utilities,Merchant 7
+2026-01-29,EXPENSE,9.96,Travel,Bank Account,Test expense for Travel,Merchant 7
+2026-03-26,EXPENSE,192.68,Entertainment,Cash,Test expense for Entertainment,Merchant 2
+2026-04-12,INCOME,371.89,Investment,Credit Card,Test income for Investment,Merchant 20
+2026-07-17,EXPENSE,42.97,Entertainment,Credit Card,Test expense for Entertainment,Merchant 2
+2026-02-10,EXPENSE,189.63,Utilities,Credit Card,Test expense for Utilities,Merchant 13
+2026-03-07,EXPENSE,146.37,Utilities,Credit Card,Test expense for Utilities,Merchant 3
+2026-07-11,EXPENSE,192.56,Food,Credit Card,Test expense for Food,Merchant 14
+2026-05-30,EXPENSE,65.01,Food,Bank Account,Test expense for Food,Merchant 13
+2026-04-26,EXPENSE,196.48,Health,Bank Account,Test expense for Health,Merchant 9
+2026-05-07,EXPENSE,20.07,Utilities,Bank Account,Test expense for Utilities,Merchant 9
+2026-06-14,INCOME,637.09,Gift,Credit Card,Test income for Gift,Merchant 15
+2026-04-16,EXPENSE,15.85,Shopping,Credit Card,Test expense for Shopping,Merchant 15
+2026-04-27,EXPENSE,130.96,Travel,Cash,Test expense for Travel,Merchant 6
+2026-07-27,EXPENSE,145.65,Transport,Cash,Test expense for Transport,Merchant 9
+2026-05-25,EXPENSE,108.12,Transport,Credit Card,Test expense for Transport,Merchant 18
+2026-01-31,EXPENSE,83.54,Food,Bank Account,Test expense for Food,Merchant 14
+2026-04-27,EXPENSE,98.0,Health,Cash,Test expense for Health,Merchant 2
+2026-04-28,EXPENSE,192.97,Entertainment,Bank Account,Test expense for Entertainment,Merchant 3
+2026-05-24,EXPENSE,20.28,Shopping,Credit Card,Test expense for Shopping,Merchant 13
+2026-04-14,EXPENSE,109.72,Health,Credit Card,Test expense for Health,Merchant 5
+2026-05-05,EXPENSE,104.58,Food,Bank Account,Test expense for Food,Merchant 6
+2026-04-11,EXPENSE,145.27,Transport,Cash,Test expense for Transport,Merchant 3
+2026-04-22,EXPENSE,192.15,Transport,Credit Card,Test expense for Transport,Merchant 1
+2026-04-17,INCOME,1815.97,Investment,Cash,Test income for Investment,Merchant 7
+2026-03-04,EXPENSE,183.62,Shopping,Bank Account,Test expense for Shopping,Merchant 3
+2026-07-05,INCOME,1725.6,Freelance,Credit Card,Test income for Freelance,Merchant 2
+2026-04-25,EXPENSE,141.47,Health,Cash,Test expense for Health,Merchant 15
+2026-07-24,EXPENSE,195.82,Food,Credit Card,Test expense for Food,Merchant 6
+2026-05-02,EXPENSE,166.36,Travel,Credit Card,Test expense for Travel,Merchant 2
+2026-07-14,EXPENSE,99.09,Shopping,Credit Card,Test expense for Shopping,Merchant 10
+2026-06-06,EXPENSE,32.63,Shopping,Bank Account,Test expense for Shopping,Merchant 13
+2026-06-29,EXPENSE,153.72,Utilities,Credit Card,Test expense for Utilities,Merchant 5
+2026-07-07,EXPENSE,65.44,Shopping,Bank Account,Test expense for Shopping,Merchant 12
+2026-02-26,EXPENSE,190.7,Shopping,Cash,Test expense for Shopping,Merchant 2
+2026-02-13,INCOME,884.86,Freelance,Bank Account,Test income for Freelance,Merchant 16
+2026-03-16,EXPENSE,74.56,Travel,Bank Account,Test expense for Travel,Merchant 11
+2026-07-15,EXPENSE,84.74,Travel,Credit Card,Test expense for Travel,Merchant 20
+2026-03-06,EXPENSE,57.24,Transport,Cash,Test expense for Transport,Merchant 9
+2026-05-20,EXPENSE,118.82,Health,Cash,Test expense for Health,Merchant 11

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Expense Manager</string>
+
+    <!-- Navigation -->
+    <string name="tab_home">Home</string>
+    <string name="tab_add">Add</string>
+    <string name="tab_transactions">Transactions</string>
+    <string name="tab_budgets">Budgets</string>
+    <string name="tab_reports">Reports</string>
+
+    <!-- Home -->
+    <string name="current_balance">Current Balance</string>
+    <string name="budget_progress">Budget Progress</string>
+    <string name="quick_add">Quick Add</string>
+    <string name="recent_transactions">Recent Transactions</string>
+    <string name="see_all">See All</string>
+    <string name="today_spend">Today\'s Spend</string>
+    <string name="this_month">This Month</string>
+
+    <!-- Add Transaction -->
+    <string name="add_expense">Add Expense</string>
+    <string name="add_income">Add Income</string>
+    <string name="edit_transaction">Edit Transaction</string>
+    <string name="save">Save</string>
+    <string name="save_and_add">Save &amp; Add Another</string>
+    <string name="amount">Amount</string>
+    <string name="category">Category</string>
+    <string name="subcategory">Subcategory</string>
+    <string name="account">Account</string>
+    <string name="date">Date</string>
+    <string name="note">Note</string>
+    <string name="merchant">Merchant / Payee</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="tags">Tags</string>
+    <string name="expense">Expense</string>
+    <string name="income">Income</string>
+    <string name="transfer">Transfer</string>
+    <string name="bulk_mode">Bulk Entry Mode</string>
+    <string name="attach_bill">Attach Bill</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_gallery">Choose from Gallery</string>
+    <string name="attachments">Attachments</string>
+    <string name="remove_attachment">Remove Attachment</string>
+
+    <!-- Transactions -->
+    <string name="all_transactions">All Transactions</string>
+    <string name="search_transactions">Search transactions…</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="no_transactions">No transactions yet</string>
+    <string name="start_adding">Tap + to add your first transaction</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="transaction_deleted">Transaction deleted</string>
+    <string name="undo">Undo</string>
+    <string name="date_range">Date Range</string>
+    <string name="amount_range">Amount Range</string>
+    <string name="apply_filters">Apply Filters</string>
+    <string name="clear_filters">Clear Filters</string>
+    <string name="save_filter">Save Filter</string>
+    <string name="saved_filters">Saved Filters</string>
+
+    <!-- Budgets -->
+    <string name="budgets_and_goals">Budgets &amp; Goals</string>
+    <string name="add_budget">Add Budget</string>
+    <string name="edit_budget">Edit Budget</string>
+    <string name="overall_budget">Overall Budget</string>
+    <string name="category_budget">Category Budget</string>
+    <string name="budget_amount">Budget Amount</string>
+    <string name="period">Period</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="enable_rollover">Enable Rollover</string>
+    <string name="spent_of">%1$s of %2$s</string>
+    <string name="remaining">%1$s remaining</string>
+    <string name="over_budget">%1$s over budget</string>
+    <string name="no_budgets">No budgets set</string>
+
+    <!-- Goals -->
+    <string name="savings_goals">Savings Goals</string>
+    <string name="add_goal">Add Goal</string>
+    <string name="edit_goal">Edit Goal</string>
+    <string name="goal_name">Goal Name</string>
+    <string name="target_amount">Target Amount</string>
+    <string name="target_date">Target Date</string>
+    <string name="transfer_to_goal">Transfer to Goal</string>
+    <string name="goal_completed">Goal Completed! 🎉</string>
+    <string name="no_goals">No savings goals yet</string>
+
+    <!-- Reports -->
+    <string name="reports">Reports</string>
+    <string name="category_breakdown">Category Breakdown</string>
+    <string name="spending_trend">Spending Trend</string>
+    <string name="income_vs_expense">Income vs Expense</string>
+    <string name="budget_vs_actual">Budget vs Actual</string>
+    <string name="account_overview">Account Overview</string>
+    <string name="top_categories">Top Categories</string>
+    <string name="cash_flow_calendar">Cash Flow Calendar</string>
+    <string name="net_worth_trend">Net Worth Trend</string>
+    <string name="lending_summary">Lending Summary</string>
+    <string name="year_in_review">Year in Review</string>
+    <string name="custom_date_range">Custom Date Range</string>
+    <string name="daily">Daily</string>
+    <string name="total_spent">Total Spent</string>
+    <string name="total_income">Total Income</string>
+    <string name="net_savings">Net Savings</string>
+
+    <!-- Accounts -->
+    <string name="accounts">Accounts</string>
+    <string name="add_account">Add Account</string>
+    <string name="edit_account">Edit Account</string>
+    <string name="account_name">Account Name</string>
+    <string name="account_type">Account Type</string>
+    <string name="initial_balance">Initial Balance</string>
+    <string name="bank_account">Bank Account</string>
+    <string name="cash">Cash</string>
+    <string name="credit_card">Credit Card</string>
+    <string name="digital_wallet">Digital Wallet</string>
+
+    <!-- Categories -->
+    <string name="categories">Categories</string>
+    <string name="add_category">Add Category</string>
+    <string name="edit_category">Edit Category</string>
+    <string name="add_subcategory">Add Subcategory</string>
+    <string name="category_name">Category Name</string>
+    <string name="icon">Icon</string>
+    <string name="color">Color</string>
+
+    <!-- Lending -->
+    <string name="lending_borrowing">Lending &amp; Borrowing</string>
+    <string name="add_lending">Add Entry</string>
+    <string name="lent">Lent</string>
+    <string name="borrowed">Borrowed</string>
+    <string name="person_name">Person Name</string>
+    <string name="pending">Pending</string>
+    <string name="partially_repaid">Partially Repaid</string>
+    <string name="settled">Settled</string>
+    <string name="mark_settled">Mark as Settled</string>
+    <string name="record_payment">Record Payment</string>
+
+    <!-- Split Expenses -->
+    <string name="split_expense">Split Expense</string>
+    <string name="add_split">Add Person</string>
+    <string name="share_amount">Share Amount</string>
+    <string name="mark_paid">Mark as Paid</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="appearance">Appearance</string>
+    <string name="theme">Theme</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="system_default">System Default</string>
+    <string name="security">Security</string>
+    <string name="app_lock">App Lock</string>
+    <string name="set_pin">Set PIN</string>
+    <string name="change_pin">Change PIN</string>
+    <string name="enable_biometric">Enable Biometric</string>
+    <string name="currency_settings">Currency</string>
+    <string name="base_currency">Base Currency</string>
+    <string name="manage_currencies">Manage Currencies</string>
+    <string name="data_management">Data Management</string>
+    <string name="export_csv">Export CSV</string>
+    <string name="export_pdf">Export PDF</string>
+    <string name="import_csv">Import CSV</string>
+    <string name="full_backup">Full Backup</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="manage_categories">Manage Categories</string>
+    <string name="manage_accounts">Manage Accounts</string>
+    <string name="quick_add_shortcuts">Quick Add Shortcuts</string>
+    <string name="about">About</string>
+    <string name="version">Version %1$s</string>
+
+    <!-- Notifications -->
+    <string name="channel_budget_alerts">Budget Alerts</string>
+    <string name="channel_reminders">Reminders</string>
+    <string name="channel_summaries">Weekly Summaries</string>
+    <string name="channel_unusual_spending">Unusual Spending</string>
+    <string name="budget_threshold_title">Budget Warning</string>
+    <string name="budget_threshold_message">You\'ve spent %1$s%% of your %2$s budget</string>
+    <string name="budget_exceeded_title">Budget Exceeded</string>
+    <string name="budget_exceeded_message">You\'ve exceeded your %1$s budget by %2$s</string>
+    <string name="bill_reminder_title">Bill Due Soon</string>
+    <string name="bill_reminder_message">%1$s is due in %2$d days</string>
+    <string name="unusual_spending_title">Unusual Spending</string>
+    <string name="unusual_spending_message">%1$s in %2$s is unusually high</string>
+
+    <!-- Recurring -->
+    <string name="recurring_transaction">Recurring Transaction</string>
+    <string name="frequency">Frequency</string>
+    <string name="next_occurrence">Next Occurrence</string>
+    <string name="end_date">End Date</string>
+    <string name="no_end_date">No end date</string>
+    <string name="active">Active</string>
+    <string name="paused">Paused</string>
+
+    <!-- Currency -->
+    <string name="currency">Currency</string>
+    <string name="conversion_rate">Conversion Rate</string>
+    <string name="symbol">Symbol</string>
+
+    <!-- General -->
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="confirm">Confirm</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="error">Error</string>
+    <string name="loading">Loading…</string>
+    <string name="empty">No data available</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="action_cannot_be_undone">This action cannot be undone.</string>
+
+    <!-- Widget -->
+    <string name="widget_name">Expense Summary</string>
+    <string name="widget_description">Shows your current balance and today\'s spending</string>
+    <string name="total_balance">Total Balance</string>
+    <string name="widget_add">+ Add</string>
+    <string name="widget_add_description">Add transaction</string>
+</resources>

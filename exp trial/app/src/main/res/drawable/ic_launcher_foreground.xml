@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Wallet with a card sliding out and a clasp pocket.
+  All shapes stay inside the adaptive-icon safe zone (the centred 66dp circle of the
+  108dp canvas) so nothing is clipped by round/squircle launcher masks.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Card tucked behind the wallet -->
+    <path
+        android:fillColor="#F3EADB"
+        android:pathData="M41,30 H69 A3,3 0 0 1 72,33 V50 H38 V33 A3,3 0 0 1 41,30 Z" />
+    <path
+        android:fillColor="#C9B79C"
+        android:pathData="M44,37 H62 V40 H44 Z" />
+
+    <!-- Wallet body -->
+    <path
+        android:fillColor="#E8B56A"
+        android:pathData="M36,42 H72 A8,8 0 0 1 80,50 V70 A8,8 0 0 1 72,78 H36 A8,8 0 0 1 28,70 V50 A8,8 0 0 1 36,42 Z" />
+
+    <!-- Clasp pocket -->
+    <path
+        android:fillColor="#D2994B"
+        android:pathData="M64,52 H72 A8,8 0 0 1 72,68 H64 A8,8 0 0 1 64,52 Z" />
+
+    <!-- Coin -->
+    <path
+        android:fillColor="#2B2A28"
+        android:pathData="M68,60 A4,4 0 1 0 76,60 A4,4 0 1 0 68,60 Z" />
+</vector>
