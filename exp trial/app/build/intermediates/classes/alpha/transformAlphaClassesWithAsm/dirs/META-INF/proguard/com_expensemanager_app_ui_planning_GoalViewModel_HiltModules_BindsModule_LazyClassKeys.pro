@@ -1,0 +1,1 @@
+-keep,allowobfuscation,allowshrinking class com.expensemanager.app.ui.planning.GoalViewModel

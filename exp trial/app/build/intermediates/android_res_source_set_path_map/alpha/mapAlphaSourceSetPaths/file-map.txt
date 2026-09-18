@@ -1,0 +1,10 @@
+com.expensemanager.app-pngs-0 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\build\generated\res\pngs\alpha
+com.expensemanager.app-resValues-1 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\build\generated\res\resValues\alpha
+com.expensemanager.app-updated_navigation_xml-2 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\build\generated\updated_navigation_xml\alpha
+com.expensemanager.app-packageAlphaResources-3 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\build\intermediates\incremental\alpha\packageAlphaResources\merged.dir
+com.expensemanager.app-packageAlphaResources-4 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\build\intermediates\incremental\alpha\packageAlphaResources\stripped.dir
+com.expensemanager.app-merged-not-compiled-resources-5 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\build\intermediates\merged-not-compiled-resources\alpha
+com.expensemanager.app-alpha-6 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\build\intermediates\merged_res\alpha\mergeAlphaResources
+com.expensemanager.app-alpha-7 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\src\alpha\res
+com.expensemanager.app-main-8 C:\Users\ashwi\OneDrive\Desktop\exp_trial_fixed\exp trial\app\src\main\res
+gradleHome-0 C:\Users\ashwi\.gradle
