@@ -131,9 +131,15 @@ fun TransactionsScreen(
 
         Spacer(modifier = Modifier.height(Dimens.SpacingMd))
 
-        // Results count and expenditure
+        // Results count and expenditure — matches the same "money leaving your spendable
+        // balance" definition used everywhere else (Home, account balance calc): plain
+        // expenses plus goal transfers and outgoing debt transfers, not just type == EXPENSE.
         val totalFilteredExpense = filteredTransactions
-            .filter { it.transaction.type == com.expensemanager.app.data.db.entity.TransactionType.EXPENSE }
+            .filter {
+                it.transaction.type == com.expensemanager.app.data.db.entity.TransactionType.EXPENSE ||
+                    it.transaction.type == com.expensemanager.app.data.db.entity.TransactionType.TRANSFER_TO_GOAL ||
+                    it.transaction.type == com.expensemanager.app.data.db.entity.TransactionType.DEBT_TRANSFER_OUT
+            }
             .sumOf { it.transaction.amount }
 
         Row(
