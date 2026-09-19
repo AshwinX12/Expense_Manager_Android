@@ -10,6 +10,10 @@
 -keep class com.google.gson.** { *; }
 -keep class com.expensemanager.app.data.db.entity.** { *; }
 -keep class com.expensemanager.app.domain.model.** { *; }
+# FullBackupManager.BackupData is Gson-serialized for the full-backup export/import — if its
+# fields get renamed differently between builds, an old backup file silently restores with
+# missing data instead of failing loudly, since Gson just skips fields it can't match.
+-keep class com.expensemanager.app.data.export.FullBackupManager$BackupData { *; }
 
 # SQLCipher
 -keep class net.sqlcipher.** { *; }
