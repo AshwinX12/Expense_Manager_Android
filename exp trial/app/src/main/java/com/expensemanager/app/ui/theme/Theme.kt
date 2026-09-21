@@ -283,6 +283,55 @@ private val TerminalDarkColorScheme = darkColorScheme(
     surfaceTint = Color.Transparent
 ).withNeutralSurfaces(TerminalColors.SurfaceDark, dark = true)
 
+// ---- Aurora ----
+private val AuroraLightColorScheme = lightColorScheme(
+    primary = AuroraColors.AccentLight,
+    onPrimary = Color.White,
+    primaryContainer = AuroraColors.SurfaceAltLight,
+    onPrimaryContainer = AuroraColors.TextPrimaryLight,
+    secondary = AuroraColors.NeutralLight,
+    onSecondary = Color.White,
+    secondaryContainer = AuroraColors.SurfaceAltLight,
+    onSecondaryContainer = AuroraColors.TextPrimaryLight,
+    tertiary = AuroraColors.GlowTeal,
+    onTertiary = AuroraColors.TextPrimaryLight,
+    background = AuroraColors.BackgroundLight,
+    onBackground = AuroraColors.TextPrimaryLight,
+    surface = AuroraColors.SurfaceLight,
+    onSurface = AuroraColors.TextPrimaryLight,
+    surfaceVariant = AuroraColors.SurfaceAltLight,
+    onSurfaceVariant = AuroraColors.TextSecondaryLight,
+    error = AuroraColors.StatusOver,
+    onError = Color.White,
+    outline = AuroraColors.DividerLight,
+    outlineVariant = AuroraColors.DividerLight,
+    surfaceTint = Color.Transparent
+).withNeutralSurfaces(AuroraColors.SurfaceLight, dark = false)
+
+private val AuroraDarkColorScheme = darkColorScheme(
+    primary = AuroraColors.AccentDark,
+    onPrimary = AuroraColors.BackgroundDark,
+    primaryContainer = AuroraColors.SurfaceAltDark,
+    onPrimaryContainer = AuroraColors.TextPrimaryDark,
+    secondary = AuroraColors.NeutralDark,
+    onSecondary = AuroraColors.BackgroundDark,
+    secondaryContainer = AuroraColors.SurfaceAltDark,
+    onSecondaryContainer = AuroraColors.TextPrimaryDark,
+    tertiary = AuroraColors.GlowTeal,
+    onTertiary = AuroraColors.BackgroundDark,
+    background = AuroraColors.BackgroundDark,
+    onBackground = AuroraColors.TextPrimaryDark,
+    surface = AuroraColors.SurfaceDark,
+    onSurface = AuroraColors.TextPrimaryDark,
+    surfaceVariant = AuroraColors.SurfaceAltDark,
+    onSurfaceVariant = AuroraColors.TextSecondaryDark,
+    error = AuroraColors.StatusOver,
+    onError = Color.White,
+    outline = AuroraColors.DividerDark,
+    outlineVariant = AuroraColors.DividerDark,
+    surfaceTint = Color.Transparent
+).withNeutralSurfaces(AuroraColors.SurfaceDark, dark = true)
+
 @Composable
 fun ExpenseManagerTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
@@ -309,6 +358,7 @@ fun ExpenseManagerTheme(
         ThemeStyle.EDITORIAL -> if (darkTheme) EditorialDarkColorScheme else EditorialLightColorScheme
         ThemeStyle.MEMPHIS -> if (darkTheme) MemphisDarkColorScheme else MemphisLightColorScheme
         ThemeStyle.TERMINAL -> if (darkTheme) TerminalDarkColorScheme else TerminalLightColorScheme
+        ThemeStyle.AURORA -> if (darkTheme) AuroraDarkColorScheme else AuroraLightColorScheme
     }
 
     val typography = when (themeStyle) {
@@ -317,6 +367,7 @@ fun ExpenseManagerTheme(
         ThemeStyle.EDITORIAL -> EditorialTypography
         ThemeStyle.MEMPHIS -> MemphisTypography
         ThemeStyle.TERMINAL -> TerminalTypography
+        ThemeStyle.AURORA -> AuroraTypography
     }
 
     val view = LocalView.current

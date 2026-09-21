@@ -46,6 +46,9 @@ fun ReportsScreen(
     if (themeStyle == com.expensemanager.app.data.db.entity.ThemeStyle.MEMPHIS) {
         MemphisBackdrop(isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f)
     }
+    if (themeStyle == com.expensemanager.app.data.db.entity.ThemeStyle.AURORA) {
+        AuroraBackdrop(isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f)
+    }
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),

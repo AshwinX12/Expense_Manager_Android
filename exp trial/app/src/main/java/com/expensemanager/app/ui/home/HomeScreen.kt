@@ -64,6 +64,9 @@ fun HomeScreen(
     if (themeStyle == com.expensemanager.app.data.db.entity.ThemeStyle.MEMPHIS) {
         MemphisBackdrop(isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f)
     }
+    if (themeStyle == com.expensemanager.app.data.db.entity.ThemeStyle.AURORA) {
+        AuroraBackdrop(isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f)
+    }
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
@@ -99,11 +102,18 @@ fun HomeScreen(
                 themeStyle == com.expensemanager.app.data.db.entity.ThemeStyle.WARM_PAPER ||
                     themeStyle == com.expensemanager.app.data.db.entity.ThemeStyle.EDITORIAL
                 )
-            val balanceContainer = if (flatDarkCard) MaterialTheme.colorScheme.surfaceContainerHigh
-            else MaterialTheme.colorScheme.primary
-            val balanceContent = if (flatDarkCard) MaterialTheme.colorScheme.onSurface
+            // Aurora's whole identity is a frosted-glass card over the gradient backdrop
+            // drawn behind this LazyColumn — a translucent surface here lets the blobs
+            // show through, in both light and dark.
+            val isAurora = themeStyle == com.expensemanager.app.data.db.entity.ThemeStyle.AURORA
+            val balanceContainer = when {
+                isAurora -> MaterialTheme.colorScheme.surface.copy(alpha = if (LocalIsDarkTheme.current) 0.35f else 0.55f)
+                flatDarkCard -> MaterialTheme.colorScheme.surfaceContainerHigh
+                else -> MaterialTheme.colorScheme.primary
+            }
+            val balanceContent = if (isAurora || flatDarkCard) MaterialTheme.colorScheme.onSurface
             else MaterialTheme.colorScheme.onPrimary
-            val balanceFigure = if (flatDarkCard) MaterialTheme.colorScheme.primary else balanceContent
+            val balanceFigure = if (isAurora || flatDarkCard) MaterialTheme.colorScheme.primary else balanceContent
 
             Card(
                 modifier = Modifier

@@ -73,5 +73,6 @@ enum class ThemeStyle {
     WARM_PAPER,
     EDITORIAL,
     MEMPHIS,
-    TERMINAL
+    TERMINAL,
+    AURORA
 }

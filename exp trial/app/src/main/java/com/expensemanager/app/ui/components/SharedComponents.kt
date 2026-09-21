@@ -55,6 +55,34 @@ fun MemphisBackdrop(modifier: Modifier = Modifier, isDark: Boolean = false) {
     }
 }
 
+/**
+ * Aurora theme's ambient backdrop — soft, blurred-looking gradient blobs (violet/teal/pink)
+ * that fade to transparent, behind the glass cards. Unlike Memphis's flat decorative shapes,
+ * these use a radial falloff so they read as ambient light rather than solid shapes.
+ */
+@Composable
+fun AuroraBackdrop(modifier: Modifier = Modifier, isDark: Boolean = false) {
+    val alpha = if (isDark) 0.35f else 0.55f
+    androidx.compose.foundation.Canvas(modifier = modifier.fillMaxSize()) {
+        val blobs = listOf(
+            Triple(com.expensemanager.app.ui.theme.AuroraColors.GlowViolet, androidx.compose.ui.geometry.Offset(size.width * 0.1f, -size.height * 0.05f), size.width * 0.55f),
+            Triple(com.expensemanager.app.ui.theme.AuroraColors.GlowTeal, androidx.compose.ui.geometry.Offset(size.width * 0.95f, size.height * 0.02f), size.width * 0.5f),
+            Triple(com.expensemanager.app.ui.theme.AuroraColors.GlowPink, androidx.compose.ui.geometry.Offset(-size.width * 0.05f, size.height * 0.35f), size.width * 0.55f)
+        )
+        blobs.forEach { (color, center, radius) ->
+            drawCircle(
+                brush = androidx.compose.ui.graphics.Brush.radialGradient(
+                    colors = listOf(color.copy(alpha = alpha), color.copy(alpha = 0f)),
+                    center = center,
+                    radius = radius
+                ),
+                radius = radius,
+                center = center
+            )
+        }
+    }
+}
+
 @Composable
 fun EmptyStateView(
     icon: @Composable () -> Unit,

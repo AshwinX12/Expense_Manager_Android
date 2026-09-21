@@ -169,10 +169,17 @@ class TransactionsViewModel @Inject constructor(
             result = result.filter { it.transaction.amount <= max }
         }
 
-        // Sort
+        // Sort — within the same day, order by time of day, not by whichever order the
+        // transactions happened to be entered in (a transaction with no time set sorts last).
         result = when (state.sortBy) {
-            SortBy.DATE_DESC -> result.sortedByDescending { it.transaction.date }
-            SortBy.DATE_ASC -> result.sortedBy { it.transaction.date }
+            SortBy.DATE_DESC -> result.sortedWith(
+                compareByDescending<com.expensemanager.app.domain.model.TransactionWithDetails> { it.transaction.date }
+                    .thenByDescending { it.transaction.time ?: java.time.LocalTime.MIN }
+            )
+            SortBy.DATE_ASC -> result.sortedWith(
+                compareBy<com.expensemanager.app.domain.model.TransactionWithDetails> { it.transaction.date }
+                    .thenBy { it.transaction.time ?: java.time.LocalTime.MIN }
+            )
             SortBy.AMOUNT_DESC -> result.sortedByDescending { it.transaction.amount }
             SortBy.AMOUNT_ASC -> result.sortedBy { it.transaction.amount }
             SortBy.CATEGORY -> result.sortedBy { it.categoryName ?: "" }

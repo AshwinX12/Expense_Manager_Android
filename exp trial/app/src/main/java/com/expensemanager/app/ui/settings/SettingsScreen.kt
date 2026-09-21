@@ -44,6 +44,7 @@ private fun themeStyleLabel(style: ThemeStyle): String = when (style) {
     ThemeStyle.EDITORIAL -> "Editorial"
     ThemeStyle.MEMPHIS -> "Memphis Geometric"
     ThemeStyle.TERMINAL -> "Terminal"
+    ThemeStyle.AURORA -> "Aurora"
 }
 
 @HiltViewModel

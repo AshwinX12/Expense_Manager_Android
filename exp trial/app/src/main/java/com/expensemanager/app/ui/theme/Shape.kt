@@ -54,12 +54,22 @@ val TerminalShapes = Shapes(
     extraLarge = RoundedCornerShape(0.dp)
 )
 
+// Aurora: large, soft radii — glass cards read as pillowy over the gradient backdrop
+val AuroraShapes = Shapes(
+    extraSmall = RoundedCornerShape(12.dp),
+    small = RoundedCornerShape(16.dp),
+    medium = RoundedCornerShape(18.dp),
+    large = RoundedCornerShape(24.dp),
+    extraLarge = RoundedCornerShape(28.dp)
+)
+
 fun appShapesFor(themeStyle: ThemeStyle): Shapes = when (themeStyle) {
     ThemeStyle.CLASSIC -> AppShapes
     ThemeStyle.WARM_PAPER -> WarmPaperShapes
     ThemeStyle.EDITORIAL -> EditorialShapes
     ThemeStyle.MEMPHIS -> MemphisShapes
     ThemeStyle.TERMINAL -> TerminalShapes
+    ThemeStyle.AURORA -> AuroraShapes
 }
 
 /** App-specific shape tokens beyond Material's default 5-step scale, swapped per theme. */
@@ -105,12 +115,20 @@ private val TerminalShapeTokens = AppShapeTokens(
     bottomSheet = RoundedCornerShape(0.dp)
 )
 
+private val AuroraShapeTokens = AppShapeTokens(
+    card = RoundedCornerShape(28.dp),
+    chip = RoundedCornerShape(16.dp),
+    button = RoundedCornerShape(18.dp),
+    bottomSheet = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+)
+
 fun appShapeTokensFor(themeStyle: ThemeStyle): AppShapeTokens = when (themeStyle) {
     ThemeStyle.CLASSIC -> ClassicShapeTokens
     ThemeStyle.WARM_PAPER -> WarmPaperShapeTokens
     ThemeStyle.EDITORIAL -> EditorialShapeTokens
     ThemeStyle.MEMPHIS -> MemphisShapeTokens
     ThemeStyle.TERMINAL -> TerminalShapeTokens
+    ThemeStyle.AURORA -> AuroraShapeTokens
 }
 
 val LocalAppShapeTokens = staticCompositionLocalOf { ClassicShapeTokens }

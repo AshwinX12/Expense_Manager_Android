@@ -239,6 +239,57 @@ object TerminalColors {
     )
 }
 
+// ============================================================
+// Theme F: Aurora — soft gradient blobs behind frosted glass cards
+// ============================================================
+// Design intent: a modern fintech look (Cash App / Revolut register) that none of the
+// other five themes cover. One indigo-violet accent does the CTA work; income/expense get
+// soft tinted chips instead of hard red/green. surfaceTint stays off (see Warm Paper's
+// history) — the ambient color here comes from the deliberate blob backdrop, not an
+// automatic elevation tint.
+
+object AuroraColors {
+    // Light
+    val BackgroundLight = Color(0xFFF4F2FB)
+    val SurfaceLight = Color(0xFFFFFFFF)
+    val SurfaceAltLight = Color(0xFFEDE9F7)
+    val TextPrimaryLight = Color(0xFF1F1B2E)
+    val TextSecondaryLight = Color(0xFF6B6580)
+    val AccentLight = Color(0xFF6D5DFC)
+    val NeutralLight = Color(0xFF8A84A0)
+    val DividerLight = Color(0xFFE3DFF2)
+
+    // Dark
+    val BackgroundDark = Color(0xFF0F0E17)
+    val SurfaceDark = Color(0xFF181622)
+    val SurfaceAltDark = Color(0xFF201E2E)
+    val TextPrimaryDark = Color(0xFFEDEBFA)
+    val TextSecondaryDark = Color(0xFF9B96B3)
+    val AccentDark = Color(0xFF8B7CFF)
+    val NeutralDark = Color(0xFF716B85)
+    val DividerDark = Color(0xFF2A2838)
+
+    // Semantic
+    val StatusGood = Color(0xFF2C8C74)
+    val StatusWarning = Color(0xFFC98A3D)
+    val StatusOver = Color(0xFFB4467A)
+
+    // Ambient backdrop blobs (background decoration only, never text)
+    val GlowViolet = Color(0xFF9B8CF0)
+    val GlowTeal = Color(0xFF7FD8C9)
+    val GlowPink = Color(0xFFF5B8D8)
+
+    // Category palette — soft pastel, distinct from every other theme's palette
+    val CategoryPalette = listOf(
+        Color(0xFF9B8CF0), // violet
+        Color(0xFF7FD8C9), // teal
+        Color(0xFFF5B8D8), // pink
+        Color(0xFF7FA8F0), // sky blue
+        Color(0xFFF0C77F), // amber
+        Color(0xFFC79FE8), // plum
+    )
+}
+
 /** Returns the category color palette for the given theme style — used when assigning colors to new categories. */
 fun categoryPaletteFor(themeStyle: ThemeStyle): List<Color> = when (themeStyle) {
     ThemeStyle.CLASSIC -> CategoryColorsClassic
@@ -246,4 +297,5 @@ fun categoryPaletteFor(themeStyle: ThemeStyle): List<Color> = when (themeStyle) 
     ThemeStyle.EDITORIAL -> EditorialColors.CategoryPalette
     ThemeStyle.MEMPHIS -> MemphisColors.CategoryPalette
     ThemeStyle.TERMINAL -> TerminalColors.CategoryPalette
+    ThemeStyle.AURORA -> AuroraColors.CategoryPalette
 }

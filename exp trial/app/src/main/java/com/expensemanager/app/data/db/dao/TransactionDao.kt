@@ -28,28 +28,28 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE id = :id")
     fun getByIdFlow(id: Long): Flow<TransactionEntity?>
 
-    @Query("SELECT * FROM transactions ORDER BY date DESC, createdAt DESC")
+    @Query("SELECT * FROM transactions ORDER BY date DESC, time DESC, createdAt DESC")
     fun getAllFlow(): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions ORDER BY date DESC, createdAt DESC")
+    @Query("SELECT * FROM transactions ORDER BY date DESC, time DESC, createdAt DESC")
     suspend fun getAll(): List<TransactionEntity>
 
-    @Query("SELECT * FROM transactions ORDER BY date DESC, createdAt DESC LIMIT :limit")
+    @Query("SELECT * FROM transactions ORDER BY date DESC, time DESC, createdAt DESC LIMIT :limit")
     fun getRecentFlow(limit: Int): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
+    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC, time DESC")
     fun getByDateRangeFlow(startDate: LocalDate, endDate: LocalDate): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
+    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC, time DESC")
     suspend fun getByDateRange(startDate: LocalDate, endDate: LocalDate): List<TransactionEntity>
 
-    @Query("SELECT * FROM transactions WHERE categoryId = :categoryId ORDER BY date DESC")
+    @Query("SELECT * FROM transactions WHERE categoryId = :categoryId ORDER BY date DESC, time DESC")
     fun getByCategoryFlow(categoryId: Long): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE accountId = :accountId ORDER BY date DESC")
+    @Query("SELECT * FROM transactions WHERE accountId = :accountId ORDER BY date DESC, time DESC")
     fun getByAccountFlow(accountId: Long): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE type = :type ORDER BY date DESC")
+    @Query("SELECT * FROM transactions WHERE type = :type ORDER BY date DESC, time DESC")
     fun getByTypeFlow(type: TransactionType): Flow<List<TransactionEntity>>
 
     // Aggregations
@@ -111,14 +111,14 @@ interface TransactionDao {
     @Query("""
         SELECT * FROM transactions 
         WHERE (note LIKE '%' || :query || '%' OR merchantName LIKE '%' || :query || '%')
-        ORDER BY date DESC
+        ORDER BY date DESC, time DESC
     """)
     fun searchFlow(query: String): Flow<List<TransactionEntity>>
 
     @Query("""
         SELECT * FROM transactions 
         WHERE amount BETWEEN :minAmount AND :maxAmount 
-        ORDER BY date DESC
+        ORDER BY date DESC, time DESC
     """)
     fun getByAmountRangeFlow(minAmount: BigDecimal, maxAmount: BigDecimal): Flow<List<TransactionEntity>>
 
