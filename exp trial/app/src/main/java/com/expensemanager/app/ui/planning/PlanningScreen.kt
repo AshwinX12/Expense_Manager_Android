@@ -24,6 +24,7 @@ import com.expensemanager.app.ui.navigation.LocalNavReselectEvent
 import com.expensemanager.app.ui.navigation.Screen
 import com.expensemanager.app.ui.theme.*
 import com.expensemanager.app.util.formatCurrency
+import com.expensemanager.app.util.formatDisplay
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,21 +32,25 @@ import java.math.BigDecimal
 fun PlanningScreen(
     budgetViewModel: BudgetViewModel = hiltViewModel(),
     goalViewModel: GoalViewModel = hiltViewModel(),
-    scheduledViewModel: ScheduledViewModel = hiltViewModel()
+    scheduledViewModel: ScheduledViewModel = hiltViewModel(),
+    reminderViewModel: ReminderViewModel = hiltViewModel()
 ) {
     val budgetState by budgetViewModel.uiState.collectAsStateWithLifecycle()
     val goalState by goalViewModel.uiState.collectAsStateWithLifecycle()
     val scheduledState by scheduledViewModel.uiState.collectAsStateWithLifecycle()
+    val reminderState by reminderViewModel.uiState.collectAsStateWithLifecycle()
 
     var showAddBudgetDialog by remember { mutableStateOf(false) }
     var showCreateCategorySheet by remember { mutableStateOf(false) }
     var showAddGoalDialog by remember { mutableStateOf(false) }
     var showTransferDialog by remember { mutableStateOf<com.expensemanager.app.data.db.entity.GoalEntity?>(null) }
     var showAddScheduledDialog by remember { mutableStateOf(false) }
+    var showAddReminderDialog by remember { mutableStateOf(false) }
 
     var budgetsExpanded by remember { mutableStateOf(true) }
     var goalsExpanded by remember { mutableStateOf(false) }
     var scheduledExpanded by remember { mutableStateOf(false) }
+    var remindersExpanded by remember { mutableStateOf(false) }
     
     val listState = rememberLazyListState()
     val reselectEvent = LocalNavReselectEvent.current
@@ -392,6 +397,98 @@ fun PlanningScreen(
                     )
                 }
             }
+
+            // Reminders Section
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.ScreenPadding),
+                    shape = CardShape,
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { remindersExpanded = !remindersExpanded }
+                                .padding(Dimens.SpacingMd),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.Notifications, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                                Spacer(modifier = Modifier.width(Dimens.SpacingSm))
+                                Text("Reminders", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(onClick = { showAddReminderDialog = true }) {
+                                    Icon(Icons.Default.Add, "Add Reminder")
+                                }
+                                Icon(
+                                    imageVector = if (remindersExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                    contentDescription = "Expand"
+                                )
+                            }
+                        }
+
+                        AnimatedVisibility(visible = remindersExpanded) {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                if (reminderState.reminders.isEmpty() && !reminderState.isLoading) {
+                                    Text(
+                                        "No reminders set.",
+                                        modifier = Modifier.padding(Dimens.SpacingMd),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                } else {
+                                    reminderState.reminders.forEach { reminder ->
+                                        val today = java.time.LocalDate.now()
+                                        val daysUntil = java.time.temporal.ChronoUnit.DAYS.between(today, reminder.dueDate)
+                                        val statusText = when {
+                                            daysUntil < 0 -> "Overdue by ${-daysUntil} day${if (daysUntil == -1L) "" else "s"}"
+                                            daysUntil == 0L -> "Due today"
+                                            daysUntil == 1L -> "Due tomorrow"
+                                            else -> "Due in $daysUntil days"
+                                        }
+                                        val statusColor = if (daysUntil < 0) BudgetDanger else MaterialTheme.colorScheme.onSurfaceVariant
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = Dimens.SpacingMd, vertical = Dimens.SpacingSm),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Column(modifier = Modifier.weight(1f)) {
+                                                Text(
+                                                    reminder.title,
+                                                    style = MaterialTheme.typography.titleSmall,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = if (reminder.isActive) MaterialTheme.colorScheme.onSurface
+                                                    else MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                                Text(
+                                                    "${reminder.dueDate.formatDisplay()} · $statusText",
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    color = if (reminder.isActive) statusColor else MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                            Switch(
+                                                checked = reminder.isActive,
+                                                onCheckedChange = { reminderViewModel.toggleActive(reminder) }
+                                            )
+                                            IconButton(onClick = { reminderViewModel.deleteReminder(reminder) }) {
+                                                Icon(Icons.Default.Delete, "Delete", Modifier.size(18.dp))
+                                            }
+                                        }
+                                        HorizontalDivider()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -502,6 +599,16 @@ fun PlanningScreen(
             onSave = { amount, type, freq, nextDate, time, categoryId, accountId ->
                 scheduledViewModel.addRule(amount, type, freq, nextDate, time, categoryId, accountId)
                 showAddScheduledDialog = false
+            }
+        )
+    }
+
+    if (showAddReminderDialog) {
+        AddReminderDialog(
+            onDismiss = { showAddReminderDialog = false },
+            onSave = { title, description, dueDate, leadTimeDays, type ->
+                reminderViewModel.addReminder(title, description, dueDate, leadTimeDays, type)
+                showAddReminderDialog = false
             }
         )
     }

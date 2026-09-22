@@ -1,6 +1,12 @@
 package com.expensemanager.app
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,6 +42,31 @@ class MainActivity : FragmentActivity() {
     /** Set when launched from the widget's + button; cleared once navigation has happened. */
     private val openAddTransaction = mutableStateOf(false)
 
+    // Android 13+ requires this to be requested at runtime — declaring it in the manifest
+    // alone silently leaves every notification call as a no-op, which was the root cause of
+    // notifications only "sometimes" working depending on whether a device happened to have
+    // it granted some other way.
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* no UI reaction needed either way — notifications just stay off if declined */ }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Whenever the app is opened, any notification it already fired has served its
+        // purpose (you're looking at the live data now) — clear the tray instead of leaving
+        // a stale "Budget Exceeded" sitting there indefinitely.
+        NotificationManagerCompat.from(this).cancelAll()
+    }
+
     override fun onStop() {
         super.onStop()
         // Keep the home-screen widget in step with whatever was just added or edited
@@ -54,6 +85,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         openAddTransaction.value = intent?.getBooleanExtra(EXTRA_OPEN_ADD_TRANSACTION, false) == true
+        requestNotificationPermissionIfNeeded()
 
         setContent {
             // Collect theme preference from DB so toggling it takes effect immediately.

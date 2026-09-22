@@ -18,19 +18,32 @@ class ReminderCheckWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        return try {
+        try {
             val dueReminders = reminderRepository.getDueReminders()
             for (reminder in dueReminders) {
                 NotificationHelper.showReminderNotification(
                     applicationContext,
                     "📅 ${reminder.title}",
-                    reminder.description ?: "Due on ${reminder.dueDate.formatDisplay()}"
+                    reminder.description ?: "Due on ${reminder.dueDate.formatDisplay()}",
+                    REMINDER_NOTIFICATION_ID_BASE + reminder.id.toInt()
                 )
                 reminderRepository.markNotified(reminder.id)
             }
-            Result.success()
+            // Chain tomorrow's 9am check — only on success/final-failure, not before a retry;
+            // see BudgetCheckWorker for why scheduling ahead of a retry would cancel it instead
+            // of letting WorkManager's own backoff run.
+            WorkScheduler.scheduleReminderCheck(applicationContext)
+            return Result.success()
         } catch (e: Exception) {
-            if (runAttemptCount < 3) Result.retry() else Result.failure()
+            if (runAttemptCount < 3) return Result.retry()
+            WorkScheduler.scheduleReminderCheck(applicationContext)
+            return Result.failure()
         }
+    }
+
+    companion object {
+        // Offset from BudgetCheckWorker's own ID base so the two notification types can never
+        // collide even though both key off a small integer entity id.
+        private const val REMINDER_NOTIFICATION_ID_BASE = 20_000
     }
 }

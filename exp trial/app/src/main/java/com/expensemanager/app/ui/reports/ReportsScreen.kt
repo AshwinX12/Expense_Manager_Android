@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.expensemanager.app.ui.components.*
 import com.expensemanager.app.ui.theme.*
 import com.expensemanager.app.util.formatCurrency
+import com.expensemanager.app.util.formatDisplay
 import com.expensemanager.app.util.formatMonthYear
 import java.math.BigDecimal
 import androidx.compose.foundation.background
@@ -106,6 +107,53 @@ fun ReportsScreen(
                             state.totalIncome.formatCurrency(),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold, color = IncomeGreen
+                        )
+                    }
+                }
+            }
+        }
+
+        // Weekly summary — same window as the weekly-summary notification, so this is
+        // where that data lives once you've read (or missed) the notification itself
+        item {
+            ChartCard(
+                title = "This Week",
+                subtitle = "Monday through today",
+                modifier = Modifier.padding(horizontal = Dimens.ScreenPadding)
+            ) {
+                Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
+                    Column {
+                        Text("Spent", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            state.weeklyTotalSpent.formatCurrency(),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold, color = ExpenseRed
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text("Transactions", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            "${state.weeklyTransactionCount}",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                state.weeklyHighestSpendDay?.let { highest ->
+                    Spacer(Modifier.height(Dimens.SpacingMd))
+                    HorizontalDivider()
+                    Spacer(Modifier.height(Dimens.SpacingSm))
+                    Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                        Text(
+                            "Highest spend: ${highest.date.formatDisplay()}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            highest.total.formatCurrency(),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = ExpenseRed
                         )
                     }
                 }

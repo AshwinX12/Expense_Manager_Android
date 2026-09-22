@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
@@ -26,6 +27,11 @@ data class ReportsUiState(
     val totalIncome: BigDecimal = BigDecimal.ZERO,
     val startDate: LocalDate = LocalDate.now().withDayOfMonth(1),
     val endDate: LocalDate = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()),
+    // Always "this calendar week" (Monday through today), independent of the date range
+    // picked above — matches what the weekly-summary notification reports.
+    val weeklyTotalSpent: BigDecimal = BigDecimal.ZERO,
+    val weeklyTransactionCount: Int = 0,
+    val weeklyHighestSpendDay: DateTotal? = null,
     val isLoading: Boolean = true
 )
 
@@ -86,6 +92,15 @@ class ReportsViewModel @Inject constructor(
             val budgets = budgetRepository.getAll()
             val statuses = budgets.map { budgetRepository.calculateBudgetStatus(it) }
 
+            // This week, always — same window as the weekly-summary notification
+            // (previousOrSame, not previous: today itself counts when today is a Monday)
+            val today = LocalDate.now()
+            val weekStart = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            val weeklyTotalSpent = transactionRepository.getTotalExpense(weekStart, today)
+            val weeklyTransactionCount = transactionRepository.getByDateRange(weekStart, today).size
+            val weeklyHighestSpendDay = transactionRepository.getDailyExpenseTotals(weekStart, today)
+                .maxByOrNull { it.total }
+
             _uiState.update {
                 it.copy(
                     categoryBreakdown = breakdown,
@@ -94,6 +109,9 @@ class ReportsViewModel @Inject constructor(
                     totalSpent = totalSpent,
                     totalIncome = totalIncome,
                     budgetStatuses = statuses,
+                    weeklyTotalSpent = weeklyTotalSpent,
+                    weeklyTransactionCount = weeklyTransactionCount,
+                    weeklyHighestSpendDay = weeklyHighestSpendDay,
                     isLoading = false
                 )
             }

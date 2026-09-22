@@ -23,7 +23,11 @@ class WeeklySummaryWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return try {
             val today = LocalDate.now()
-            val weekStart = today.with(TemporalAdjusters.previous(DayOfWeek.MONDAY))
+            // previousOrSame, not previous: TemporalAdjusters.previous(MONDAY) skips today
+            // even when today IS Monday, jumping back a full extra week — so a summary that
+            // happened to run on a Monday covered an 8-day span instead of 7, double-counting
+            // that Monday's own spending against the prior week's total.
+            val weekStart = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             val weekEnd = today
 
             val totalSpent = transactionRepository.getTotalExpense(weekStart, weekEnd)

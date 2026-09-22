@@ -15,10 +15,15 @@ class ReminderRepository @Inject constructor(
     fun getActiveFlow() = reminderDao.getActiveFlow()
     fun getAllFlow() = reminderDao.getAllFlow()
 
+    // Each reminder fires on its own schedule — leadTimeDays before its dueDate — rather than
+    // every reminder sharing one flat "7 days ahead" window regardless of what it was set to.
     suspend fun getDueReminders(): List<ReminderEntity> {
-        val checkDate = LocalDate.now().plusDays(7) // Check 7 days ahead
-        return reminderDao.getDueReminders(checkDate)
+        val today = LocalDate.now()
+        return reminderDao.getPendingReminders().filter { reminder ->
+            !reminder.dueDate.minusDays(reminder.leadTimeDays.toLong()).isAfter(today)
+        }
     }
 
     suspend fun markNotified(id: Long) = reminderDao.markNotified(id)
+    suspend fun resetNotified(id: Long) = reminderDao.resetNotified(id)
 }

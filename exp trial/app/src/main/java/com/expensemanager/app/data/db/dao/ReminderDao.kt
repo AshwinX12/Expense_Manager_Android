@@ -3,7 +3,6 @@ package com.expensemanager.app.data.db.dao
 import androidx.room.*
 import com.expensemanager.app.data.db.entity.ReminderEntity
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDate
 
 @Dao
 interface ReminderDao {
@@ -26,13 +25,14 @@ interface ReminderDao {
     @Query("SELECT * FROM reminders ORDER BY dueDate")
     fun getAllFlow(): Flow<List<ReminderEntity>>
 
-    @Query("""
-        SELECT * FROM reminders 
-        WHERE isActive = 1 AND isNotified = 0 
-        AND dueDate <= :checkDate
-    """)
-    suspend fun getDueReminders(checkDate: LocalDate): List<ReminderEntity>
+    // Filtered in Kotlin (repository), not SQL: each reminder has its own leadTimeDays,
+    // so "is this due yet" can't be expressed as a single WHERE clause against one checkDate.
+    @Query("SELECT * FROM reminders WHERE isActive = 1 AND isNotified = 0")
+    suspend fun getPendingReminders(): List<ReminderEntity>
 
     @Query("UPDATE reminders SET isNotified = 1 WHERE id = :id")
     suspend fun markNotified(id: Long)
+
+    @Query("UPDATE reminders SET isNotified = 0 WHERE id = :id")
+    suspend fun resetNotified(id: Long)
 }
