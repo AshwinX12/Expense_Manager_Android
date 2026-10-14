@@ -26,10 +26,34 @@ class BudgetRepository @Inject constructor(
     suspend fun getOverallBudget() = budgetDao.getOverallBudget()
     suspend fun getByCategoryId(categoryId: Long) = budgetDao.getByCategoryId(categoryId)
 
+    /**
+     * Call before deleting a category. Budgets that only tracked it are deleted; clubbed budgets
+     * that included it keep going with the remaining categories (down to one, they become an
+     * ordinary single-category budget).
+     */
+    suspend fun removeCategory(categoryId: Long) {
+        budgetDao.getAll()
+            .filter { categoryId in it.effectiveCategoryIds }
+            .forEach { budget ->
+                val remaining = budget.effectiveCategoryIds - categoryId
+                if (remaining.isEmpty()) {
+                    budgetDao.delete(budget)
+                } else {
+                    budgetDao.update(
+                        budget.copy(
+                            categoryId = remaining.first(),
+                            categoryIds = if (remaining.size > 1) remaining else emptyList()
+                        )
+                    )
+                }
+            }
+    }
+
     suspend fun calculateBudgetStatus(budget: BudgetEntity): BudgetStatus {
         val (startDate, endDate) = getPeriodDates(budget.period)
-        val spent = if (budget.categoryId != null) {
-            transactionDao.getCategoryExpense(budget.categoryId, startDate, endDate)
+        val categoryIds = budget.effectiveCategoryIds
+        val spent = if (categoryIds.isNotEmpty()) {
+            transactionDao.getCategoriesExpense(categoryIds, startDate, endDate)
         } else {
             transactionDao.getTotalExpense(startDate, endDate)
         }

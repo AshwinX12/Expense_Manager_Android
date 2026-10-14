@@ -97,6 +97,14 @@ class Converters {
     @TypeConverter
     fun toReminderType(value: String?): ReminderType? = value?.let { ReminderType.valueOf(it) }
 
+    // List<Long> (clubbed budget category ids), stored comma-separated; empty string = empty list
+    @TypeConverter
+    fun fromLongList(list: List<Long>?): String = list?.joinToString(",") ?: ""
+
+    @TypeConverter
+    fun toLongList(value: String?): List<Long> =
+        value?.split(",")?.mapNotNull { it.trim().toLongOrNull() } ?: emptyList()
+
     // List<String> (for tags)
     @TypeConverter
     fun fromStringList(list: List<String>?): String? = list?.let { gson.toJson(it) }

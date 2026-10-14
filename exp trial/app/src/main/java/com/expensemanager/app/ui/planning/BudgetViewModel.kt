@@ -12,6 +12,13 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
 
+/** One budget to create. Empty [categoryIds] = overall; more than one = clubbed budget. */
+data class BudgetDraft(
+    val categoryIds: List<Long>,
+    val name: String?,
+    val amount: BigDecimal
+)
+
 data class BudgetsUiState(
     val budgets: List<BudgetStatus> = emptyList(),
     val categories: List<CategoryEntity> = emptyList(),
@@ -52,17 +59,22 @@ class BudgetViewModel @Inject constructor(
         }
     }
 
-    fun addBudget(categoryId: Long?, amount: BigDecimal, period: BudgetPeriod, rollover: Boolean) {
+    /** Creates every draft in one go; a draft with several categories becomes one clubbed budget. */
+    fun addBudgets(drafts: List<BudgetDraft>, period: BudgetPeriod, rollover: Boolean) {
         viewModelScope.launch {
-            budgetRepository.insert(
-                BudgetEntity(
-                    categoryId = categoryId,
-                    amount = amount,
-                    period = period,
-                    rolloverEnabled = rollover,
-                    startDate = LocalDate.now()
+            drafts.forEach { draft ->
+                budgetRepository.insert(
+                    BudgetEntity(
+                        categoryId = draft.categoryIds.firstOrNull(),
+                        categoryIds = if (draft.categoryIds.size > 1) draft.categoryIds else emptyList(),
+                        name = draft.name?.takeIf { it.isNotBlank() },
+                        amount = draft.amount,
+                        period = period,
+                        rolloverEnabled = rollover,
+                        startDate = LocalDate.now()
+                    )
                 )
-            )
+            }
         }
     }
 

@@ -122,9 +122,13 @@ fun PlanningScreen(
                                     )
                                 } else {
                                     budgetState.budgets.forEach { budgetStatus ->
-                                        val categoryName = if (budgetStatus.budget.categoryId != null) {
-                                            budgetState.categories.find { it.id == budgetStatus.budget.categoryId }?.name ?: "Unknown"
-                                        } else "Overall"
+                                        val budgetCategoryIds = budgetStatus.budget.effectiveCategoryIds
+                                        val categoryName = budgetStatus.budget.name
+                                            ?: if (budgetCategoryIds.isNotEmpty()) {
+                                                budgetCategoryIds.joinToString(" + ") { id ->
+                                                    budgetState.categories.find { it.id == id }?.name ?: "Unknown"
+                                                }
+                                            } else "Overall"
 
                                         Column(modifier = Modifier.padding(horizontal = Dimens.SpacingMd, vertical = Dimens.SpacingSm)) {
                                             Row(
@@ -495,9 +499,10 @@ fun PlanningScreen(
     if (showAddBudgetDialog) {
         AddBudgetDialog(
             categories = budgetState.categories,
+            existingBudgets = budgetState.budgets.map { it.budget },
             onDismiss = { showAddBudgetDialog = false },
-            onSave = { categoryId, amount, period, rollover ->
-                budgetViewModel.addBudget(categoryId, amount, period, rollover)
+            onSave = { drafts, period, rollover ->
+                budgetViewModel.addBudgets(drafts, period, rollover)
                 showAddBudgetDialog = false
             },
             onCreateCategory = { showCreateCategorySheet = true }

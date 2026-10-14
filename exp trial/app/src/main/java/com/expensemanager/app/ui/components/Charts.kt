@@ -65,7 +65,10 @@ fun ChartCard(
 fun PieChart(
     data: List<Pair<String, BigDecimal>>,
     colors: List<Color>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    // Drawn around every wedge so neighbouring slices (and similar colours) stay distinguishable.
+    borderColor: Color = MaterialTheme.colorScheme.surface,
+    borderWidth: androidx.compose.ui.unit.Dp = 2.dp
 ) {
     Canvas(
         modifier = modifier
@@ -75,8 +78,12 @@ fun PieChart(
         val total = data.sumOf { it.second }.toFloat()
         if (total <= 0) return@Canvas
 
-        val radius = size.minDimension / 2
+        // Inset by half the stroke so the outer border isn't clipped at the canvas edge.
+        val borderPx = borderWidth.toPx()
+        val radius = size.minDimension / 2 - borderPx / 2
         val center = Offset(size.width / 2, size.height / 2)
+        val topLeft = Offset(center.x - radius, center.y - radius)
+        val arcSize = Size(radius * 2, radius * 2)
         var startAngle = -90f
 
         data.forEachIndexed { index, (_, value) ->
@@ -86,9 +93,19 @@ fun PieChart(
                 startAngle = startAngle,
                 sweepAngle = sweepAngle,
                 useCenter = true,
-                topLeft = Offset(center.x - radius, center.y - radius),
-                size = Size(radius * 2, radius * 2),
+                topLeft = topLeft,
+                size = arcSize,
                 style = androidx.compose.ui.graphics.drawscope.Fill
+            )
+            // Outline the wedge (including its two radial edges, via useCenter) on top of the fill.
+            drawArc(
+                color = borderColor,
+                startAngle = startAngle,
+                sweepAngle = sweepAngle,
+                useCenter = true,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(width = borderPx, join = StrokeJoin.Round)
             )
             startAngle += sweepAngle
         }

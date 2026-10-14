@@ -97,6 +97,13 @@ interface TransactionDao {
 
     @Query("""
         SELECT COALESCE(SUM(amount), 0) FROM transactions
+        WHERE type = 'EXPENSE' AND categoryId IN (:categoryIds)
+        AND date BETWEEN :startDate AND :endDate
+    """)
+    suspend fun getCategoriesExpense(categoryIds: List<Long>, startDate: LocalDate, endDate: LocalDate): BigDecimal
+
+    @Query("""
+        SELECT COALESCE(SUM(amount), 0) FROM transactions
         WHERE type IN ('EXPENSE', 'TRANSFER_TO_GOAL', 'DEBT_TRANSFER_OUT') AND date BETWEEN :startDate AND :endDate
     """)
     suspend fun getTotalExpense(startDate: LocalDate, endDate: LocalDate): BigDecimal

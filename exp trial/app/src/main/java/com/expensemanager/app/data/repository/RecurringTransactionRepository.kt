@@ -6,6 +6,8 @@ import com.expensemanager.app.data.db.dao.TransactionDao
 import com.expensemanager.app.data.db.entity.RecurringFrequency
 import com.expensemanager.app.data.db.entity.RecurringRuleEntity
 import com.expensemanager.app.data.db.entity.TransactionEntity
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Inject
@@ -39,7 +41,18 @@ class RecurringTransactionRepository @Inject constructor(
         }
     }
 
-    suspend fun generateDueTransactions() {
+    /**
+     * generateDueTransactions is called from several places at once (HomeViewModel init,
+     * ScheduledViewModel init, addRule, the daily worker). Without serialising them, two runs both
+     * read the same due rule before either advances nextOccurrence, and each inserts a transaction.
+     */
+    private val generateMutex = Mutex()
+
+    suspend fun generateDueTransactions() = generateMutex.withLock {
+        generateDueTransactionsLocked()
+    }
+
+    private suspend fun generateDueTransactionsLocked() {
         fixOrphanedTransactions()
         val today = LocalDate.now()
         val dueRules = recurringRuleDao.getDueRules(today)

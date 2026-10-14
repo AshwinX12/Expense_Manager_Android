@@ -48,7 +48,6 @@ class ReportsViewModel @Inject constructor(
     private var categoriesMap: Map<Long, CategoryEntity> = emptyMap()
 
     init {
-        loadCategories()
         loadReports()
         // Reports previously only reloaded on init or when the date range changed, so an
         // edited/added transaction or a changed budget elsewhere in the app (Reports stays
@@ -62,21 +61,21 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
-    private fun loadCategories() {
-        viewModelScope.launch {
-            categoriesMap = categoryRepository.getAllCategories().associateBy { it.id }
-        }
-    }
-
     fun loadReports() {
         val state = _uiState.value
         viewModelScope.launch {
             // Category breakdown
+            // Fetch categories here rather than relying on a separate init-time load: that load
+            // ran concurrently, so the first report often built before the map was populated and
+            // every row fell back to "Uncategorized". It also never saw categories added later.
+            categoriesMap = categoryRepository.getAllCategories().associateBy { it.id }
             val categoryTotals = transactionRepository.getExpenseByCategoryRaw(state.startDate, state.endDate)
+                .sortedByDescending { it.total }
+            // Names and colors come from the same sorted list so each color matches its row.
             val breakdown = categoryTotals.map { ct ->
                 val name = ct.categoryId?.let { categoriesMap[it]?.name } ?: "Uncategorized"
                 name to ct.total
-            }.sortedByDescending { it.second }
+            }
             val colors = categoryTotals.map { ct ->
                 ct.categoryId?.let { categoriesMap[it]?.colorHex } ?: "#AEB6BF"
             }

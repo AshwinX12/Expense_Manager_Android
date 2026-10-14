@@ -18,8 +18,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.expensemanager.app.data.db.entity.BudgetEntity
 import com.expensemanager.app.data.db.entity.CategoryEntity
 import com.expensemanager.app.data.db.entity.SubcategoryEntity
+import com.expensemanager.app.data.repository.BudgetRepository
 import com.expensemanager.app.data.repository.CategoryRepository
 import com.expensemanager.app.ui.components.CreateCategorySheet
 import com.expensemanager.app.ui.components.flatTopAppBarColors
@@ -32,9 +34,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val budgetRepository: BudgetRepository
 ) : ViewModel() {
     val categories = categoryRepository.getAllCategoriesFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val budgets = budgetRepository.getAllFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun addCategory(name: String, color: String) {
@@ -46,7 +52,10 @@ class CategoryViewModel @Inject constructor(
     }
 
     fun deleteCategory(category: CategoryEntity) {
-        viewModelScope.launch { categoryRepository.deleteCategory(category) }
+        viewModelScope.launch {
+            budgetRepository.removeCategory(category.id)
+            categoryRepository.deleteCategory(category)
+        }
     }
 
     fun addSubcategory(name: String, parentId: Long) {
@@ -63,6 +72,8 @@ fun CategoriesScreen(
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val categories by viewModel.categories.collectAsStateWithLifecycle()
+    val budgets by viewModel.budgets.collectAsStateWithLifecycle()
+    var pendingDelete by remember { mutableStateOf<CategoryEntity?>(null) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showSubcategoryDialog by remember { mutableStateOf<CategoryEntity?>(null) }
     val themeStyle = LocalThemeStyle.current
@@ -109,7 +120,11 @@ fun CategoriesScreen(
                                     Icon(Icons.Default.SubdirectoryArrowRight, "Add subcategory", Modifier.size(18.dp))
                                 }
                                 if (!category.isDefault) {
-                                    IconButton(onClick = { viewModel.deleteCategory(category) }) {
+                                    IconButton(onClick = {
+                                        // Only interrupt with a confirmation when budgets are affected.
+                                        val affected = budgets.any { category.id in it.effectiveCategoryIds }
+                                        if (affected) pendingDelete = category else viewModel.deleteCategory(category)
+                                    }) {
                                         Icon(Icons.Default.Delete, "Delete", Modifier.size(18.dp))
                                     }
                                 }
@@ -119,6 +134,41 @@ fun CategoriesScreen(
                 }
             }
         }
+    }
+
+    pendingDelete?.let { category ->
+        // Budgets that only tracked this category go with it; clubbed budgets survive and
+        // just stop tracking it (see BudgetRepository.removeCategory).
+        val deletedBudgets = budgets.filter { it.effectiveCategoryIds == listOf(category.id) }
+        val shrunkBudgets = budgets.filter { category.id in it.effectiveCategoryIds && it.effectiveCategoryIds.size > 1 }
+        fun label(b: BudgetEntity) = b.name ?: b.effectiveCategoryIds.joinToString(" + ") { id ->
+            categories.find { it.id == id }?.name ?: "Unknown"
+        }.ifEmpty { "Overall" }
+
+        AlertDialog(
+            onDismissRequest = { pendingDelete = null },
+            icon = { Icon(Icons.Default.Warning, null, tint = MaterialTheme.colorScheme.error) },
+            title = { Text("Delete ${category.name}?") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpacingSm)) {
+                    if (deletedBudgets.isNotEmpty()) {
+                        Text("These budgets will be permanently deleted:", fontWeight = FontWeight.SemiBold)
+                        deletedBudgets.forEach { Text("• ${label(it)}", style = MaterialTheme.typography.bodyMedium) }
+                    }
+                    if (shrunkBudgets.isNotEmpty()) {
+                        Text("These combined budgets will keep going without ${category.name}:", fontWeight = FontWeight.SemiBold)
+                        shrunkBudgets.forEach { Text("• ${label(it)}", style = MaterialTheme.typography.bodyMedium) }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { viewModel.deleteCategory(category); pendingDelete = null },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) { Text("Delete") }
+            },
+            dismissButton = { TextButton(onClick = { pendingDelete = null }) { Text("Cancel") } }
+        )
     }
 
     if (showAddDialog) {

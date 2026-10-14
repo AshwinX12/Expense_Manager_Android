@@ -229,7 +229,10 @@ fun ReportsScreen(
                 ) {
                     state.budgetStatuses.forEach { bs ->
                         Text(
-                            if (bs.budget.categoryId != null) "Category Budget" else "Overall",
+                            bs.budget.name
+                                ?: if (bs.budget.isClubbed) "Combined Budget"
+                                else if (bs.budget.categoryId != null) "Category Budget"
+                                else "Overall",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

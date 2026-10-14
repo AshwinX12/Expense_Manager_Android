@@ -35,7 +35,7 @@ import java.math.BigDecimal
         AttachmentEntity::class,
         SettingsEntity::class
     ],
-    version = 5,
+    version = 7,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -96,6 +96,36 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE budgets ADD COLUMN categoryIds TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE budgets ADD COLUMN name TEXT DEFAULT NULL")
+            }
+        }
+
+        // SQLite can't drop a foreign key in place, so rebuild budgets without the cascade on
+        // categoryId (it deleted whole clubbed budgets when their first category was deleted).
+        val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `budgets_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`categoryId` INTEGER, `amount` TEXT NOT NULL, `period` TEXT NOT NULL, " +
+                        "`rolloverEnabled` INTEGER NOT NULL, `rolloverAmount` TEXT NOT NULL, " +
+                        "`startDate` TEXT NOT NULL, `alertThreshold` INTEGER NOT NULL, " +
+                        "`categoryIds` TEXT NOT NULL DEFAULT '', `name` TEXT)"
+                )
+                db.execSQL(
+                    "INSERT INTO budgets_new (id, categoryId, amount, period, rolloverEnabled, rolloverAmount, " +
+                        "startDate, alertThreshold, categoryIds, name) " +
+                        "SELECT id, categoryId, amount, period, rolloverEnabled, rolloverAmount, " +
+                        "startDate, alertThreshold, categoryIds, name FROM budgets"
+                )
+                db.execSQL("DROP TABLE budgets")
+                db.execSQL("ALTER TABLE budgets_new RENAME TO budgets")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_budgets_categoryId` ON `budgets` (`categoryId`)")
+            }
+        }
+
         fun create(context: Context): AppDatabase {
             return Room.databaseBuilder(
                 context.applicationContext,
@@ -103,7 +133,7 @@ abstract class AppDatabase : RoomDatabase() {
                 DATABASE_NAME
             )
                 .addCallback(SeedCallback())
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
                 .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
                 .build()
         }
